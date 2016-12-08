@@ -12,10 +12,10 @@ Vanilla Forums' jsConnect for ASP.NET Core MVC
 ```json
 "dependencies": { 
    "jsConnectAspNetCoreMvc": "1.0.*" 
-   }
+}
 ```
 
-**2.** Configure the DI Container
+**2.** Configure the DI Container. The library expects that you inject a hashing algorithm (keep it in sync with what you use in Vanilla Forums), `IConfiguration` and `ILogger`.
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -36,7 +36,7 @@ public void ConfigureServices(IServiceCollection services)
 **3.** Add configuration
 ```json
 "Vanilla": {
-"ClientId": "your_client_id",
+   "ClientId": "your_client_id",
    "ClientSecret": "your_secret"
 }
 ```
