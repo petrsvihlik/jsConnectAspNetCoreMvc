@@ -14,6 +14,7 @@ Vanilla Forums' jsConnect for ASP.NET Core MVC
    "jsConnectAspNetCoreMvc": "1.0.*" 
 }
 ```
+ASP.NET Core MVC will automatically discover the controller inside the assembly.
 
 **2.** Configure the DI Container. The library expects that you inject a hashing algorithm (keep it in sync with what you use in Vanilla Forums), `IConfiguration` and `ILogger`.
 
