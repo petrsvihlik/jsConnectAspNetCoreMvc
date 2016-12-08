@@ -1,15 +1,26 @@
 {
-  "version": "1.0.0-*",
+	"version": "1.0.0-*",
 
 	"dependencies": {
 		"Microsoft.AspNetCore.Mvc.Core": "1.1.0",
 		"Microsoft.AspNetCore.Mvc.ViewFeatures": "1.1.0",
-		"Microsoft.Extensions.Configuration.Binder":"1.1.0",
+		"Microsoft.Extensions.Configuration.Binder": "1.1.0",
 		"NETStandard.Library": "1.6.1"
 	},
 
-  "frameworks": {
-    "netstandard1.6": {
-    }
-  }
+	"frameworks": {
+		"netstandard1.6": {
+		}
+	},
+	"packOptions": {
+		"repository": {
+			"type": "git",
+			"url": "https://github.com/petrsvihlik/jsConnectAspNetCoreMvc"
+		},
+		"licenseUrl": "https://github.com/petrsvihlik/jsConnectAspNetCoreMvc/blob/master/LICENSE",
+		"owners": [ "Petr Svihlik" ],
+		"summary": "Vanilla Forums' jsConnect for ASP.NET Core MVC"
+	},
+	"description": "Vanilla Forums' jsConnect for ASP.NET Core MVC",
+	"authors": [ "Petr Svihlik", "Jan Lenoch" ]
 }
