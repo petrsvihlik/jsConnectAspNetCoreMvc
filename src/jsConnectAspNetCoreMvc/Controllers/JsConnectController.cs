@@ -53,7 +53,8 @@ namespace jsConnectNetCore.Controllers
 					jsConnectResult.UniqueId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
 					jsConnectResult.Name = user.FindFirst(ClaimTypes.Name).Value;
 					jsConnectResult.Email = user.FindFirst(ClaimTypes.Email).Value;
-					jsConnectResult.PhotoUrl = string.Empty;
+					jsConnectResult.PhotoUrl = user.FindFirst("AvatarUrl")?.Value;
+					jsConnectResult.Roles = user.FindFirst("Roles")?.Value;
 				}
 				else
 				{
@@ -83,7 +84,7 @@ namespace jsConnectNetCore.Controllers
 					jsConnectResult.Error = exception.Error;
 				}
 				jsConnectResult.Message = ex.Message;
-				Logger.LogError(new EventId(1), ex, ex.Message);
+				Logger.LogError(new EventId(ex.HResult), ex, ex.Message);
 
 				return new JsonResult(jsConnectResult);
 			}
