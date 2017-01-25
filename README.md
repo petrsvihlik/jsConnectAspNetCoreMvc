@@ -38,7 +38,9 @@ public void ConfigureServices(IServiceCollection services)
 ```json
 "Vanilla": {
    "ClientId": "your_client_id",
-   "ClientSecret": "your_secret"
+   "ClientSecret": "your_secret",
+   "TimestampValidFor": "int_seconds"
+   "AllowWhitespaceInUsername": "bool" 
 }
 ```
 **4.** Make sure the `HttpContext.User` has the following claims set according to the [documentation](http://docs.vanillaforums.com/help/sso/jsconnect/seamless/):

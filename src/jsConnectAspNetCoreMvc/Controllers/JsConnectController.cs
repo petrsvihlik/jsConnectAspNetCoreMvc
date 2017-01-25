@@ -3,7 +3,10 @@ using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
+
 using jsConnectNetCore.Models;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -21,6 +24,7 @@ namespace jsConnectNetCore.Controllers
 		public string ClientId => Configuration.GetValue("Vanilla:ClientID", string.Empty);
 		public string ClientSecret => Configuration.GetValue("Vanilla:ClientSecret", string.Empty);
 		public int TimestampValidFor => Configuration.GetValue("Vanilla:TimestampValidFor", 30 * 60);
+		public bool AllowWhitespaceInUsername => Configuration.GetValue("Vanilla:AllowWhitespaceInUsername", false);
 
 		#endregion
 
@@ -49,9 +53,14 @@ namespace jsConnectNetCore.Controllers
 
 				if (user != null && user.Identity.IsAuthenticated && timestamp.HasValue)
 				{
+					string userName = user.FindFirst(ClaimTypes.Name).Value;
+					if (!AllowWhitespaceInUsername)
+					{
+						userName = Regex.Replace(userName, @"\s+", "");
+					}
 					// Sign-in user response
 					jsConnectResult.UniqueId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
-					jsConnectResult.Name = user.FindFirst(ClaimTypes.Name).Value;
+					jsConnectResult.Name = userName;
 					jsConnectResult.Email = user.FindFirst(ClaimTypes.Email).Value;
 					jsConnectResult.PhotoUrl = user.FindFirst("AvatarUrl")?.Value;
 					jsConnectResult.Roles = user.FindFirst("Roles")?.Value;
