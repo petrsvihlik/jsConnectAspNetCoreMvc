@@ -54,7 +54,13 @@ namespace jsConnectNetCore.Models
 		public string UniqueId
 		{
 			get { return UserData.GetValue(nameof(UniqueId)); }
-			set { UserData[nameof(UniqueId)] = value; }
+			set
+			{
+				if (value != null)
+				{
+					UserData[nameof(UniqueId)] = value;
+				}
+			}
 		}
 
 
@@ -62,7 +68,13 @@ namespace jsConnectNetCore.Models
 		public string Name
 		{
 			get { return UserData.GetValue(nameof(Name)); }
-			set { UserData[nameof(Name)] = value; }
+			set
+			{
+				if (value != null)
+				{
+					UserData[nameof(Name)] = value;
+				}
+			}
 		}
 
 
@@ -70,7 +82,13 @@ namespace jsConnectNetCore.Models
 		public string Email
 		{
 			get { return UserData.GetValue(nameof(Email)); }
-			set { UserData[nameof(Email)] = value; }
+			set
+			{
+				if (value != null)
+				{
+					UserData[nameof(Email)] = value;
+				}
+			}
 		}
 
 
@@ -78,7 +96,13 @@ namespace jsConnectNetCore.Models
 		public string PhotoUrl
 		{
 			get { return UserData.GetValue(nameof(PhotoUrl)); }
-			set { UserData[nameof(PhotoUrl)] = value; }
+			set
+			{
+				if (value != null)
+				{
+					UserData[nameof(PhotoUrl)] = value;
+				}
+			}
 		}
 
 
@@ -86,7 +110,13 @@ namespace jsConnectNetCore.Models
 		public string Roles
 		{
 			get { return UserData.GetValue(nameof(Roles)); }
-			set { UserData[nameof(Roles)] = value; }
+			set
+			{
+				if (value != null)
+				{
+					UserData[nameof(Roles)] = value;
+				}
+			}
 		}
 
 		[JsonIgnore]
@@ -94,7 +124,7 @@ namespace jsConnectNetCore.Models
 		{
 			get
 			{
-				return string.Join("&", UserData.OrderBy(p=>p.Key).Select(kv => kv.Key.ToLower().UrlEncode() + "=" + kv.Value.UrlEncode()));
+				return string.Join("&", UserData.OrderBy(p => p.Key).Select(kv => kv.Key.ToLower().UrlEncode() + "=" + kv.Value.UrlEncode()));
 			}
 		}
 
