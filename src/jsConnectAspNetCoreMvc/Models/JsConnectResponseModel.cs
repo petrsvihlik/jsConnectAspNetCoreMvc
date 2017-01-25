@@ -7,6 +7,7 @@ namespace jsConnectNetCore.Models
 	public class JsConnectResponseModel
 	{
 		private string _error = null;
+		private string _message = null;
 
 		[JsonProperty("client_id")]
 		public string ClientId
@@ -36,7 +37,12 @@ namespace jsConnectNetCore.Models
 		[JsonProperty("message")]
 		public string Message
 		{
-			get; set;
+			get { return _message; }
+			set
+			{
+				UserData.Clear();
+				_message = value;
+			}
 		}
 
 		#region "User Data"
