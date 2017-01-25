@@ -39,17 +39,17 @@ public void ConfigureServices(IServiceCollection services)
 "Vanilla": {
    "ClientId": "your_client_id",
    "ClientSecret": "your_secret",
-   "TimestampValidFor": "int_seconds"
+   "TimestampValidFor": "int_seconds",
    "AllowWhitespaceInUsername": "bool" 
 }
 ```
 **4.** Make sure the `HttpContext.User` has the following claims set according to the [documentation](http://docs.vanillaforums.com/help/sso/jsconnect/seamless/):
-```csharp
+```
 System.Security.Claims.ClaimTypes.NameIdentifier // required
 System.Security.Claims.ClaimTypes.Name // required
 System.Security.Claims.ClaimTypes.Email // required
-"AvatarUrl // optional
-"Roles // optional
+"AvatarUrl" // optional
+"Roles" // optional
 
 ```
 
