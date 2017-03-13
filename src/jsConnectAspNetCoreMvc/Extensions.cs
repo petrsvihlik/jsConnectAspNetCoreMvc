@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace jsConnectNetCore
 {
@@ -94,5 +95,15 @@ namespace jsConnectNetCore
 				return default(L);
 			}
 		}
-	}
+
+        public static string RemoveAccents(this string input)
+        {
+            return new string(
+                input
+                .Normalize(System.Text.NormalizationForm.FormD)
+                .ToCharArray()
+                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                .ToArray());
+        }
+    }
 }
