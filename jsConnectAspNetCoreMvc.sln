@@ -1,20 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0EB0E003-5911-4A1F-A4FE-27A046C69D1A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{06DB3DBE-1BB3-4D9F-9FD9-3AD7E9F07967}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		global.json = global.json
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "jsConnectAspNetCoreMvc", "src\jsConnectAspNetCoreMvc\jsConnectAspNetCoreMvc.xproj", "{912C9673-A2BE-4841-80DE-4927B00D4AAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jsConnectAspNetCoreMvc", "src\jsConnectAspNetCoreMvc\jsConnectAspNetCoreMvc.csproj", "{912C9673-A2BE-4841-80DE-4927B00D4AAB}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "jsConnectAspNetCoreMvc.Tests", "src\jsConnectAspNetCoreMvc.Tests\jsConnectAspNetCoreMvc.Tests.xproj", "{0C1DDC78-FA02-4E0A-B37A-AAF8FE2B317C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jsConnectAspNetCoreMvc.Tests", "src\jsConnectAspNetCoreMvc.Tests\jsConnectAspNetCoreMvc.Tests.csproj", "{CB29B34C-08CF-46F7-8BF1-72A53B8A8CD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,16 +25,16 @@ Global
 		{912C9673-A2BE-4841-80DE-4927B00D4AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{912C9673-A2BE-4841-80DE-4927B00D4AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{912C9673-A2BE-4841-80DE-4927B00D4AAB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C1DDC78-FA02-4E0A-B37A-AAF8FE2B317C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C1DDC78-FA02-4E0A-B37A-AAF8FE2B317C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C1DDC78-FA02-4E0A-B37A-AAF8FE2B317C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C1DDC78-FA02-4E0A-B37A-AAF8FE2B317C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB29B34C-08CF-46F7-8BF1-72A53B8A8CD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB29B34C-08CF-46F7-8BF1-72A53B8A8CD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB29B34C-08CF-46F7-8BF1-72A53B8A8CD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB29B34C-08CF-46F7-8BF1-72A53B8A8CD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{912C9673-A2BE-4841-80DE-4927B00D4AAB} = {0EB0E003-5911-4A1F-A4FE-27A046C69D1A}
-		{0C1DDC78-FA02-4E0A-B37A-AAF8FE2B317C} = {0EB0E003-5911-4A1F-A4FE-27A046C69D1A}
+		{CB29B34C-08CF-46F7-8BF1-72A53B8A8CD9} = {0EB0E003-5911-4A1F-A4FE-27A046C69D1A}
 	EndGlobalSection
 EndGlobal

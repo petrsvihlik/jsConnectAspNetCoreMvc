@@ -56,8 +56,6 @@ namespace jsConnectNetCore.Controllers
 
                 if (user != null && user.Identity.IsAuthenticated && timestamp.HasValue)
                 {
-                    //string userName = Task.Run(() => GetUserName(user.FindFirst(ClaimTypes.Name))).Result;
-
                     string uniqueId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
                     string fullName = user.FindFirst(ClaimTypes.Name).Value;
 
@@ -111,9 +109,11 @@ namespace jsConnectNetCore.Controllers
                 string transformedFullName = Regex.Replace(fullName, @"\s+", "");
                 transformedFullName = transformedFullName.RemoveAccents();
 
-                using (var vanillaClient = new VanillaApiClient(VanillaApiBaseUri))
+                var logger = (LoggerFactory != null) ? LoggerFactory.CreateLogger<VanillaApiClient>() : null;
+
+                using (var vanillaClient = new VanillaApiClient(VanillaApiBaseUri, logger))
                 {
-                    resultingUserName = await vanillaClient.GetUserName(uniqueId, transformedFullName);
+                    resultingUserName = await vanillaClient.GetUniqueUserName(uniqueId, transformedFullName);
                 }
             }
             else

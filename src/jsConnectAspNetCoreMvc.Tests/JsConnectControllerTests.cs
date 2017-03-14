@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
+﻿using jsConnectNetCore.Controllers;
 using Microsoft.Extensions.Configuration;
-using jsConnectNetCore.Controllers;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
+using Xunit;
+using Moq;
 
 namespace jsConnectAspNetCoreMvc.Tests
 {
     public class JsConnectControllerTests
     {
         public static IConfigurationRoot Configuration { get; set; }
+        public static ILogger<JsConnectController> Logger { get; set; }
 
         public JsConnectControllerTests()
         {
@@ -22,8 +23,13 @@ namespace jsConnectAspNetCoreMvc.Tests
 
             var builder = new ConfigurationBuilder();
             builder.AddInMemoryCollection(dict);
-
             Configuration = builder.Build();
+            var loggerMock = new Mock<ILogger<JsConnectController>>();
+
+            // Not working since extension methods are static, hence not-mockable.
+            //loggerMock.Setup(m => m.LogError(It.IsAny<EventId>(), It.IsAny<Exception>(), It.IsAny<string>(), It.IsAny<object[]>()));
+
+            Logger = loggerMock.Object;
         }
 
         [Theory]
@@ -33,7 +39,7 @@ namespace jsConnectAspNetCoreMvc.Tests
         public async void GetsExistingUserName(string uniqueId, string fullName)
         {
             // Arrange
-            var controller = new JsConnectController(Configuration, null, SHA512.Create());
+            var controller = new JsConnectController(Configuration, Logger, SHA512.Create());
 
             // Act
             string resultingUserName = await controller.GetVanillaUserName(uniqueId, fullName);
@@ -47,7 +53,7 @@ namespace jsConnectAspNetCoreMvc.Tests
         public async void GetsNewUserName(string uniqueId, string fullName)
         {
             // Arrange
-            var controller = new JsConnectController(Configuration, null, SHA512.Create());
+            var controller = new JsConnectController(Configuration, Logger, SHA512.Create());
 
             // Act
             string resultingUserName = await controller.GetVanillaUserName(uniqueId, fullName);
@@ -57,17 +63,17 @@ namespace jsConnectAspNetCoreMvc.Tests
         }
 
         [Theory]
-        [InlineData("22", "JmenoPrijmeni01")]
+        [InlineData("21", "JanLenoch")]
         public async void CreatesNewSuffixedUserName(string uniqueId, string fullName)
         {
             // Arrange
-            var controller = new JsConnectController(Configuration, null, SHA512.Create());
+            var controller = new JsConnectController(Configuration, Logger, SHA512.Create());
 
             // Act
             string resultingUserName = await controller.GetVanillaUserName(uniqueId, fullName);
 
             // Assert
-            Assert.Equal("JmenoPrijmeni01", resultingUserName);
+            Assert.Equal("JanLenoch1", resultingUserName);
         }
     }
 }

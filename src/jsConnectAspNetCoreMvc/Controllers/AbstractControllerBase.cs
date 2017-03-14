@@ -11,11 +11,19 @@ namespace jsConnectNetCore.Controllers
 	{
 		protected IConfiguration Configuration { get; set; }
 		protected ILogger<T> Logger { get; set; }
+        protected ILoggerFactory LoggerFactory { get; set; }
 
 		protected AbstractControllerBase(IConfiguration configuration, ILogger<T> logger)
 		{
 			Configuration = configuration;
 			Logger = logger;
 		}
-	}
+
+        protected AbstractControllerBase(IConfiguration configuration, ILogger<T> logger, ILoggerFactory loggerFactory)
+        {
+            Configuration = configuration;
+            Logger = logger;
+            LoggerFactory = loggerFactory;
+        }
+    }
 }

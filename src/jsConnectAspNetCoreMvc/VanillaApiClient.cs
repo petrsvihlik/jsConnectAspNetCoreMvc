@@ -14,7 +14,7 @@ namespace jsConnectNetCore
     {
         private string USERS_ENDPOINT = "users/get.json";
 
-        private HttpClient _httpClient;
+        private HttpClient _httpClient = null;
         private string _vanillaApiUri;
 
         public HttpClient HttpClient
@@ -27,7 +27,7 @@ namespace jsConnectNetCore
 
         protected ILogger<VanillaApiClient> Logger { get; set; }
 
-        public VanillaApiClient(string vanillaApiUri) //, ILogger<VanillaApiClient> logger)
+        public VanillaApiClient(string vanillaApiUri, ILogger<VanillaApiClient> logger)
         {
             if (vanillaApiUri == null)
             {
@@ -40,7 +40,7 @@ namespace jsConnectNetCore
             }
 
             _vanillaApiUri = vanillaApiUri;
-            //Logger = logger;
+            Logger = logger;
         }
 
         public void Dispose()
@@ -48,7 +48,13 @@ namespace jsConnectNetCore
             _httpClient?.Dispose();
         }
 
-        public async Task<string> GetUserName(string userId, string fullName)
+        /// <summary>
+        /// Gets a user name of either an existing or a new user. Should the proposed name conflict with another user's one, a numeric suffix is added.
+        /// </summary>
+        /// <param name="userId">Unique ID of the Vanilla user</param>
+        /// <param name="fullName">The proposed user name</param>
+        /// <returns>The unique user name</returns>
+        public async Task<string> GetUniqueUserName(string userId, string fullName)
         {
             if (string.IsNullOrEmpty(userId))
             {
@@ -60,11 +66,10 @@ namespace jsConnectNetCore
                 throw new ArgumentException("The fullName parameter must not be null or an empty string.");
             }
 
-            // Ask Vanilla if a user with the userId exists and return their existing .Profile.Name
             var user = await GetUser(userId: userId);
 
-            // TODO: Check if Vanilla distinguishes users in a case-sensitive manner.
-            if (!fullName.Equals(user?.Profile?.Name, StringComparison.OrdinalIgnoreCase))
+            // TODO: Check if Vanilla distinguishes users in a case-sensitive manner. Asked in https://kenticosoftware.sharepoint.com/sites/ConsultingProjects/VanillaForums/Lists/Backlog/Flat.aspx?RootFolder=%2Fsites%2FConsultingProjects%2FVanillaForums%2FLists%2FBacklog%2FQ%20Are%20user%20names%20case%20sensitive&FolderCTID=0x01200200DCD59A83F9BF31498745D74175F3CE51
+            if (fullName.Equals(user?.Profile?.Name, StringComparison.OrdinalIgnoreCase))
             {
                 return user.Profile.Name;
             }
@@ -87,6 +92,12 @@ namespace jsConnectNetCore
             }
         }
 
+        /// <summary>
+        /// Gets a Vanilla user, either by the unique ID or by a user name eventually.
+        /// </summary>
+        /// <param name="userId">Unique ID of the Vanilla user</param>
+        /// <param name="userName">The user name to search by</param>
+        /// <returns>The <see cref="VanillaUser"/> user</returns>
         public async Task<VanillaUser> GetUser(string userId = null, string userName = null)
         {
             string parameterName;
@@ -107,7 +118,7 @@ namespace jsConnectNetCore
                 throw new ArgumentException("Either the userId or userName parameter must be supplied.");
             }
 
-            var request = CreateRequest($"{USERS_ENDPOINT}?User.{parameterName}={userName}");
+            var request = CreateRequest($"{USERS_ENDPOINT}?User.{parameterName}={parameterValue}");
 
             try
             {
@@ -126,7 +137,8 @@ namespace jsConnectNetCore
             }
             catch (Exception ex)
             {
-                Logger.LogError(new EventId(ex.HResult), ex, ex.Message);
+                // The Logger is not guaranteed to be populated (not null), hence the null-coallescence.
+                Logger?.LogError(new EventId(ex.HResult), ex, ex.Message);
                 throw;
             }
         }
