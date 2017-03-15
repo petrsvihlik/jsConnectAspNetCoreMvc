@@ -1,73 +1,72 @@
 ﻿using jsConnectNetCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using Xunit;
-using Moq;
 
 namespace jsConnectAspNetCoreMvc.Tests
 {
     public class JsConnectControllerTests
     {
-        private const string API_URI = "https://kentico.vanillastaging.com/api/v1/";
-        private const bool ALLOW_WHITESPACE = false;
-
-        private ILogger _logger;
+        private const string API_URI = "https://kentico.vanillastaging.com/";
 
         public JsConnectControllerTests()
         {
-            var loggerMock = new Mock<ILogger<VanillaApiClient>>();
-
-            // Not working since extension methods are static, hence not-mockable. We would have to use MS Fakes' so called 'shim' for redirecting such a method call. Fakes are still not available in core.
-            //loggerMock.Setup(m => m.LogError(It.IsAny<EventId>(), It.IsAny<Exception>(), It.IsAny<string>(), It.IsAny<object[]>()));
-
-            _logger = loggerMock.Object;
         }
 
         [Theory]
-        [InlineData("4", "PetrSvihlik")]
-        [InlineData("12", "JanLenoch")]
-        [InlineData("20", "MartinDanko")]
-        public async void GetsExistingUserName(string uniqueId, string fullName)
+        [InlineData("PetrSvihlik")]
+        [InlineData("JanLenoch")]
+        [InlineData("MartinDanko")]
+        public async void GetsExistingUserName(string fullName)
         {
             // Arrange
-            var client = new VanillaApiClient(API_URI, ALLOW_WHITESPACE, null);
+            var client = new VanillaApiClient(API_URI, null);
 
             // Act
-            string resultingUserName = await client.GetNormalizedUserName(uniqueId, fullName);
+            string resultingUserName = await client.GetUniqueUserName(fullName);
 
             // Assert
-            Assert.Equal(fullName, resultingUserName);
+            Assert.NotEqual(fullName, resultingUserName);
         }
 
         [Theory]
-        [InlineData("21", "Jméno Příjmení 01")]
-        public async void GetsNewUserName(string uniqueId, string fullName)
+        [InlineData("JmenoPrijmeni")]
+        public async void GetsNewUserName(string fullName)
         {
             // Arrange
-            var client = new VanillaApiClient(API_URI, ALLOW_WHITESPACE, null);
+            var client = new VanillaApiClient(API_URI, null);
 
             // Act
-            string resultingUserName = await client.GetNormalizedUserName(uniqueId, fullName);
+            string resultingUserName = await client.GetUniqueUserName(fullName);
 
             // Assert
-            Assert.Equal("JmenoPrijmeni01", resultingUserName);
+            Assert.Equal("JmenoPrijmeni", resultingUserName);
         }
 
         [Theory]
-        [InlineData("21", "JanLenoch")]
-        public async void CreatesNewSuffixedUserName(string uniqueId, string fullName)
+        [InlineData("JanLenoch")]
+        public async void CreatesNewSuffixedUserName(string fullName)
         {
             // Arrange
-            var client = new VanillaApiClient(API_URI, ALLOW_WHITESPACE, null);
+            var client = new VanillaApiClient(API_URI, null);
 
             // Act
-            string resultingUserName = await client.GetNormalizedUserName(uniqueId, fullName);
+            string resultingUserName = await client.GetUniqueUserName(fullName);
 
             // Assert
             Assert.Equal("JanLenoch1", resultingUserName);
+        }
+
+        [Theory]
+        [InlineData("0B0AF54F-5A55-4C78-8E86-C31CE3E43F3B")]
+        public async void NonExistentUserReturnsNull(string userId)
+        {
+            // Arrange
+            var client = new VanillaApiClient(API_URI, null);
+
+            // Act
+            var user = await client.GetUser(userId);
+
+            // Assert
+            Assert.Null(user);
         }
     }
 }

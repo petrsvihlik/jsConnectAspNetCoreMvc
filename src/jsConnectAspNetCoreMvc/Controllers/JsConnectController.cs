@@ -4,14 +4,13 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using jsConnectNetCore.Models;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace jsConnectNetCore.Controllers
 {
@@ -27,19 +26,20 @@ namespace jsConnectNetCore.Controllers
         public string ClientSecret => Configuration.GetValue("Vanilla:ClientSecret", string.Empty);
         public int TimestampValidFor => Configuration.GetValue("Vanilla:TimestampValidFor", 30 * 60);
         public bool AllowWhitespaceInUsername => Configuration.GetValue("Vanilla:AllowWhitespaceInUsername", false);
+        public bool AllowAccentsInUsername => Configuration.GetValue("Vanilla:AllowAccentsInUsername", false);
+        public bool AllowDuplicateUserNames => Configuration.GetValue("Vanilla:AllowDuplicateUserNames", false);
 
-        // Example: 'https://kentico.vanillastaging.com/'
+        /// <summary>
+        /// Example: https://forums.domain.tld/
+        /// </summary>
         public string BaseUri => Configuration.GetValue("Vanilla:BaseUri", string.Empty);
-
-        // Example: 'api/v1/'
-        public string ApiRelativeUri => Configuration.GetValue("Vanilla:ApiRelativeUri", string.Empty);
 
         #endregion
 
         private HashAlgorithm HashAlgorithm { get; set; }
 
 
-        public JsConnectController(IConfiguration configuration, ILogger<JsConnectController> logger, HashAlgorithm hashAlgorithm) : base(configuration, logger)
+        public JsConnectController(IConfiguration configuration, ILogger<JsConnectController> logger, ILoggerFactory loggerFactory, HashAlgorithm hashAlgorithm) : base(configuration, logger, loggerFactory)
         {
             HashAlgorithm = hashAlgorithm;
         }
@@ -75,11 +75,34 @@ namespace jsConnectNetCore.Controllers
                     string uniqueId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
                     string fullName = user.FindFirst(ClaimTypes.Name).Value;
                     var logger = LoggerFactory?.CreateLogger<VanillaApiClient>();
-                    string resultingUserName;
 
-                    using (var vanillaClient = new VanillaApiClient(BaseUri + ApiRelativeUri, AllowWhitespaceInUsername, logger))
+                    string resultingUserName = fullName;
+
+                    using (var vanillaClient = new VanillaApiClient(BaseUri, logger))
                     {
-                        resultingUserName = await vanillaClient.GetNormalizedUserName(uniqueId, fullName);
+                        // Try to get user
+                        var vanillaUser = await vanillaClient.GetUser(uniqueId);
+                        if (vanillaUser != null)
+                        {
+                            // Existing user (don't change username)
+                            resultingUserName = vanillaUser.Profile.Name;
+                        }
+                        else
+                        {
+                            // New user (generate a new username based on settings)
+                            if (!AllowWhitespaceInUsername)
+                            {
+                                resultingUserName = Regex.Replace(resultingUserName, @"\s+", "");
+                            }
+                            if (!AllowAccentsInUsername)
+                            {
+                                resultingUserName = resultingUserName.RemoveAccents();
+                            }
+                            if (!AllowDuplicateUserNames)
+                            {
+                                resultingUserName = await vanillaClient.GetUniqueUserName(resultingUserName);
+                            }
+                        }
                     }
 
                     // Sign-in user response
