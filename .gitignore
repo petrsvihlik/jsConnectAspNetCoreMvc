@@ -267,3 +267,6 @@ __pycache__/
 
 # Cake - Uncomment if you are using it
 # tools/
+
+# Backup folder created by Visual Studio 2017 upon converting the project to the .csproj type
+Backup/
