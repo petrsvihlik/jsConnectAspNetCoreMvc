@@ -15,7 +15,11 @@ namespace jsConnectNetCore
 
         protected HttpClient HttpClient => _httpClient ?? new HttpClient();
 
-
+        /// <summary>
+        /// Creates a new instance of an object facilitating communication with the Vanilla API (https://blog.vanillaforums.com/api/).
+        /// </summary>
+        /// <param name="vanillaApiBaseUri">Base API URI - e.g. https://forums.domain.tld/ </param>
+        /// <param name="logger"></param>
         public VanillaApiClient(string vanillaApiBaseUri, ILogger<VanillaApiClient> logger)
         {
             if (string.IsNullOrEmpty(vanillaApiBaseUri))
@@ -27,6 +31,9 @@ namespace jsConnectNetCore
             _logger = logger;
         }
 
+        /// <summary>
+        /// Releases unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             _httpClient?.Dispose();

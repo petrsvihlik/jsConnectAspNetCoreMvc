@@ -96,6 +96,9 @@ namespace jsConnectNetCore
 			}
 		}
 
+        /// <summary>
+        /// Removes diacritics from the current string.
+        /// </summary>
         public static string RemoveAccents(this string input)
         {
             return new string(

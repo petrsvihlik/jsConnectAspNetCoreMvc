@@ -30,7 +30,7 @@ namespace jsConnectNetCore.Controllers
         public bool AllowDuplicateUserNames => Configuration.GetValue("Vanilla:AllowDuplicateUserNames", false);
 
         /// <summary>
-        /// Example: https://forums.domain.tld/
+        /// Base Vanilla API URI. Example: https://forums.domain.tld/
         /// </summary>
         public string BaseUri => Configuration.GetValue("Vanilla:BaseUri", string.Empty);
 
