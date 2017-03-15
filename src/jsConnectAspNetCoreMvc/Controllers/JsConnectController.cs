@@ -27,7 +27,12 @@ namespace jsConnectNetCore.Controllers
         public string ClientSecret => Configuration.GetValue("Vanilla:ClientSecret", string.Empty);
         public int TimestampValidFor => Configuration.GetValue("Vanilla:TimestampValidFor", 30 * 60);
         public bool AllowWhitespaceInUsername => Configuration.GetValue("Vanilla:AllowWhitespaceInUsername", false);
-        public string VanillaApiBaseUri => Configuration.GetValue("Vanilla:ApiBaseUri", string.Empty);
+
+        // Example: 'https://kentico.vanillastaging.com/'
+        public string BaseUri => Configuration.GetValue("Vanilla:BaseUri", string.Empty);
+
+        // Example: 'api/v1/'
+        public string ApiRelativeUri => Configuration.GetValue("Vanilla:ApiRelativeUri", string.Empty);
 
         #endregion
 
@@ -42,9 +47,20 @@ namespace jsConnectNetCore.Controllers
         /// <summary>
         /// Returns details of a currently signed-in user, if any.
         /// </summary>
+        /// <remarks>A backward-compatibility method. Not sure if MVC is capable of redirecting to async method automatically. I'll check that eventually.</remarks>
         [HttpGet("[action]")]
         [Produces("application/json")]
-        public async Task<ActionResult> Authenticate([FromQuery] string client_id, [FromQuery] string callback, [FromQuery] int? timestamp = null, [FromQuery] string signature = null)
+        public ActionResult Authenticate([FromQuery] string client_id, [FromQuery] string callback, [FromQuery] int? timestamp = null, [FromQuery] string signature = null)
+        {
+            return Task.Run(() => AuthenticateAsync(client_id, callback, timestamp, signature)).Result;
+        }
+
+        /// <summary>
+        /// Returns details of a currently signed-in user, if any.
+        /// </summary>
+        [HttpGet("[action]")]
+        [Produces("application/json")]
+        public async Task<ActionResult> AuthenticateAsync([FromQuery] string client_id, [FromQuery] string callback, [FromQuery] int? timestamp = null, [FromQuery] string signature = null)
         {
             JsConnectResponseModel jsConnectResult = new JsConnectResponseModel();
 
@@ -58,10 +74,17 @@ namespace jsConnectNetCore.Controllers
                 {
                     string uniqueId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
                     string fullName = user.FindFirst(ClaimTypes.Name).Value;
+                    var logger = LoggerFactory?.CreateLogger<VanillaApiClient>();
+                    string resultingUserName;
+
+                    using (var vanillaClient = new VanillaApiClient(BaseUri + ApiRelativeUri, AllowWhitespaceInUsername, logger))
+                    {
+                        resultingUserName = await vanillaClient.GetNormalizedUserName(uniqueId, fullName);
+                    }
 
                     // Sign-in user response
                     jsConnectResult.UniqueId = uniqueId;
-                    jsConnectResult.Name = await GetVanillaUserName(uniqueId, fullName);
+                    jsConnectResult.Name = resultingUserName;
                     jsConnectResult.Email = user.FindFirst(ClaimTypes.Email).Value;
                     jsConnectResult.PhotoUrl = user.FindFirst("AvatarUrl")?.Value;
                     jsConnectResult.Roles = user.FindFirst("Roles")?.Value;
@@ -98,30 +121,6 @@ namespace jsConnectNetCore.Controllers
 
                 return new JsonResult(jsConnectResult);
             }
-        }
-
-        public async Task<string> GetVanillaUserName(string uniqueId, string fullName)
-        {
-            string resultingUserName;
-
-            if (!string.IsNullOrEmpty(VanillaApiBaseUri))
-            {
-                string transformedFullName = Regex.Replace(fullName, @"\s+", "");
-                transformedFullName = transformedFullName.RemoveAccents();
-
-                var logger = (LoggerFactory != null) ? LoggerFactory.CreateLogger<VanillaApiClient>() : null;
-
-                using (var vanillaClient = new VanillaApiClient(VanillaApiBaseUri, logger))
-                {
-                    resultingUserName = await vanillaClient.GetUniqueUserName(uniqueId, transformedFullName);
-                }
-            }
-            else
-            {
-                throw new Exception("The Vanilla:ApiBaseUri application settings cannot be empty.");
-            }
-
-            return resultingUserName;
         }
 
         /// <summary>

@@ -14,8 +14,10 @@ namespace jsConnectNetCore
     {
         private string USERS_ENDPOINT = "users/get.json";
 
-        private HttpClient _httpClient = null;
-        private string _vanillaApiUri;
+        protected HttpClient _httpClient = null;
+        protected string _apiUri;
+        protected bool _alowWhitespaceInUsername;
+        protected ILogger<VanillaApiClient> _logger;
 
         public HttpClient HttpClient
         {
@@ -25,9 +27,8 @@ namespace jsConnectNetCore
             }
         }
 
-        protected ILogger<VanillaApiClient> Logger { get; set; }
 
-        public VanillaApiClient(string vanillaApiUri, ILogger<VanillaApiClient> logger)
+        public VanillaApiClient(string vanillaApiUri, bool allowWhitespaceInUsername, ILogger<VanillaApiClient> logger)
         {
             if (vanillaApiUri == null)
             {
@@ -39,13 +40,35 @@ namespace jsConnectNetCore
                 throw new ArgumentException("The vanillaApiUri must not be empty.", nameof(vanillaApiUri));
             }
 
-            _vanillaApiUri = vanillaApiUri;
-            Logger = logger;
+            _apiUri = vanillaApiUri;
+            _alowWhitespaceInUsername = allowWhitespaceInUsername;
+            _logger = logger;
         }
 
         public void Dispose()
         {
             _httpClient?.Dispose();
+        }
+
+        /// <summary>
+        /// Gets a normalized user name from the user's full name and checks for uniqueness via Vanilla API.
+        /// </summary>
+        /// <param name="uniqueId">Unique ID of the user</param>
+        /// <param name="fullName">Full name of the user</param>
+        /// <returns>Normalized user name</returns>
+        public async Task<string> GetNormalizedUserName(string uniqueId, string fullName)
+        {
+            string resultingUserName;
+            string transformedFullName = string.Empty;
+
+            if (!_alowWhitespaceInUsername)
+            {
+                transformedFullName = Regex.Replace(fullName, @"\s+", "");
+            }
+
+            resultingUserName = await GetUniqueUserName(uniqueId, transformedFullName.RemoveAccents());
+
+            return resultingUserName;
         }
 
         /// <summary>
@@ -68,7 +91,7 @@ namespace jsConnectNetCore
 
             var user = await GetUser(userId: userId);
 
-            // TODO: Check if Vanilla distinguishes users in a case-sensitive manner. Asked in https://kenticosoftware.sharepoint.com/sites/ConsultingProjects/VanillaForums/Lists/Backlog/Flat.aspx?RootFolder=%2Fsites%2FConsultingProjects%2FVanillaForums%2FLists%2FBacklog%2FQ%20Are%20user%20names%20case%20sensitive&FolderCTID=0x01200200DCD59A83F9BF31498745D74175F3CE51
+            // Vanilla treats users in a case-insensitive manner.
             if (fullName.Equals(user?.Profile?.Name, StringComparison.OrdinalIgnoreCase))
             {
                 return user.Profile.Name;
@@ -138,16 +161,16 @@ namespace jsConnectNetCore
             catch (Exception ex)
             {
                 // The Logger is not guaranteed to be populated (not null), hence the null-coallescence.
-                Logger?.LogError(new EventId(ex.HResult), ex, ex.Message);
+                _logger?.LogError(new EventId(ex.HResult), ex, ex.Message);
                 throw;
             }
         }
 
-        private HttpRequestMessage CreateRequest(string endpoint)
+        private HttpRequestMessage CreateRequest(string uriSuffix)
         {
             HttpRequestMessage request = new HttpRequestMessage
             {
-                RequestUri = new Uri(_vanillaApiUri + endpoint),
+                RequestUri = new Uri(_apiUri + uriSuffix),
                 Method = HttpMethod.Get
             };
 

@@ -1,4 +1,4 @@
-﻿using jsConnectNetCore.Controllers;
+﻿using jsConnectNetCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,25 +11,19 @@ namespace jsConnectAspNetCoreMvc.Tests
 {
     public class JsConnectControllerTests
     {
-        public static IConfigurationRoot Configuration { get; set; }
-        public static ILogger<JsConnectController> Logger { get; set; }
+        private const string API_URI = "https://kentico.vanillastaging.com/api/v1/";
+        private const bool ALLOW_WHITESPACE = false;
+
+        private ILogger _logger;
 
         public JsConnectControllerTests()
         {
-            var dict = new Dictionary<string, string>
-            {
-                { "Vanilla:ApiBaseUri", "https://kentico.vanillastaging.com/api/v1/" }
-            };
+            var loggerMock = new Mock<ILogger<VanillaApiClient>>();
 
-            var builder = new ConfigurationBuilder();
-            builder.AddInMemoryCollection(dict);
-            Configuration = builder.Build();
-            var loggerMock = new Mock<ILogger<JsConnectController>>();
-
-            // Not working since extension methods are static, hence not-mockable.
+            // Not working since extension methods are static, hence not-mockable. We would have to use MS Fakes' so called 'shim' for redirecting such a method call. Fakes are still not available in core.
             //loggerMock.Setup(m => m.LogError(It.IsAny<EventId>(), It.IsAny<Exception>(), It.IsAny<string>(), It.IsAny<object[]>()));
 
-            Logger = loggerMock.Object;
+            _logger = loggerMock.Object;
         }
 
         [Theory]
@@ -39,10 +33,10 @@ namespace jsConnectAspNetCoreMvc.Tests
         public async void GetsExistingUserName(string uniqueId, string fullName)
         {
             // Arrange
-            var controller = new JsConnectController(Configuration, Logger, SHA512.Create());
+            var client = new VanillaApiClient(API_URI, ALLOW_WHITESPACE, null);
 
             // Act
-            string resultingUserName = await controller.GetVanillaUserName(uniqueId, fullName);
+            string resultingUserName = await client.GetNormalizedUserName(uniqueId, fullName);
 
             // Assert
             Assert.Equal(fullName, resultingUserName);
@@ -53,10 +47,10 @@ namespace jsConnectAspNetCoreMvc.Tests
         public async void GetsNewUserName(string uniqueId, string fullName)
         {
             // Arrange
-            var controller = new JsConnectController(Configuration, Logger, SHA512.Create());
+            var client = new VanillaApiClient(API_URI, ALLOW_WHITESPACE, null);
 
             // Act
-            string resultingUserName = await controller.GetVanillaUserName(uniqueId, fullName);
+            string resultingUserName = await client.GetNormalizedUserName(uniqueId, fullName);
 
             // Assert
             Assert.Equal("JmenoPrijmeni01", resultingUserName);
@@ -67,10 +61,10 @@ namespace jsConnectAspNetCoreMvc.Tests
         public async void CreatesNewSuffixedUserName(string uniqueId, string fullName)
         {
             // Arrange
-            var controller = new JsConnectController(Configuration, Logger, SHA512.Create());
+            var client = new VanillaApiClient(API_URI, ALLOW_WHITESPACE, null);
 
             // Act
-            string resultingUserName = await controller.GetVanillaUserName(uniqueId, fullName);
+            string resultingUserName = await client.GetNormalizedUserName(uniqueId, fullName);
 
             // Assert
             Assert.Equal("JanLenoch1", resultingUserName);
