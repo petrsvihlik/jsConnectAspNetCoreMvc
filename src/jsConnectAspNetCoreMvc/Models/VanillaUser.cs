@@ -40,6 +40,5 @@ namespace jsConnectNetCore.Models
         public string _CssClass { get; set; }
         public bool Online { get; set; }
         public object LastOnlineDate { get; set; }
-        public bool Private { get; set; }
     }
 }

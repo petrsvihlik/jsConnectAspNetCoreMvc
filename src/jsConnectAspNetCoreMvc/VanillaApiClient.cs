@@ -7,13 +7,25 @@ using jsConnectNetCore.Models;
 
 namespace jsConnectNetCore
 {
+
+
     public class VanillaApiClient : IDisposable
     {
+        #region Fields
+
         protected readonly HttpClient _httpClient = null;
         protected readonly string _apiBaseUri;
         protected readonly ILogger<VanillaApiClient> _logger;
 
+        #endregion
+
+        #region Properties
+
         protected HttpClient HttpClient => _httpClient ?? new HttpClient();
+
+        #endregion
+
+        #region Constructors
 
         /// <summary>
         /// Creates a new instance of an object facilitating communication with the Vanilla API (https://blog.vanillaforums.com/api/).
@@ -31,6 +43,10 @@ namespace jsConnectNetCore
             _logger = logger;
         }
 
+        #endregion
+
+        #region Public methods
+
         /// <summary>
         /// Releases unmanaged resources.
         /// </summary>
@@ -38,7 +54,6 @@ namespace jsConnectNetCore
         {
             _httpClient?.Dispose();
         }
-
 
         /// <summary>
         /// Gets an unused username. Should the proposed name be in conflict with another user, a numeric suffix is added.
@@ -66,22 +81,26 @@ namespace jsConnectNetCore
             return suffixedUserName;
         }
 
-
         /// <summary>
         /// Gets a Vanilla user, either by the unique ID or by a user name eventually.
         /// </summary>
         /// <param name="userId">Unique ID of the Vanilla user</param>
         /// <param name="userName">The user name to search by</param>
         /// <returns>The <see cref="VanillaUser"/> user</returns>
-        public async Task<VanillaUser> GetUser(string userId = null, string userName = null)
+        public async Task<VanillaUser> GetUser(int? userId = null, string email = null, string userName = null)
         {
             string parameterName;
             string parameterValue;
 
-            if (!string.IsNullOrEmpty(userId))
+            if (userId.HasValue)
             {
                 parameterName = "UserId";
-                parameterValue = userId;
+                parameterValue = userId.ToString();
+            }
+            else if (!string.IsNullOrEmpty(email))
+            {
+                parameterName = "Email";
+                parameterValue = email;
             }
             else if (!string.IsNullOrEmpty(userName))
             {
@@ -118,6 +137,10 @@ namespace jsConnectNetCore
             }
         }
 
+        #endregion
+
+        #region Private methods
+
         private HttpRequestMessage CreateRequest(string uriSuffix)
         {
             HttpRequestMessage request = new HttpRequestMessage
@@ -130,5 +153,7 @@ namespace jsConnectNetCore
 
             return request;
         }
+
+        #endregion
     }
 }

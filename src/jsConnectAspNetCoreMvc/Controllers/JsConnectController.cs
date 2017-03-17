@@ -73,41 +73,12 @@ namespace jsConnectNetCore.Controllers
                 if (user != null && user.Identity.IsAuthenticated && timestamp.HasValue)
                 {
                     string uniqueId = user.FindFirst(ClaimTypes.NameIdentifier).Value;
+                    string email = user.FindFirst(ClaimTypes.Email).Value;
                     string fullName = user.FindFirst(ClaimTypes.Name).Value;
-                    var logger = LoggerFactory?.CreateLogger<VanillaApiClient>();
-
-                    string resultingUserName = fullName;
-
-                    using (var vanillaClient = new VanillaApiClient(BaseUri, logger))
-                    {
-                        // Try to get user
-                        var vanillaUser = await vanillaClient.GetUser(uniqueId);
-                        if (vanillaUser != null)
-                        {
-                            // Existing user (don't change username)
-                            resultingUserName = vanillaUser.Profile.Name;
-                        }
-                        else
-                        {
-                            // New user (generate a new username based on settings)
-                            if (!AllowWhitespaceInUsername)
-                            {
-                                resultingUserName = Regex.Replace(resultingUserName, @"\s+", "");
-                            }
-                            if (!AllowAccentsInUsername)
-                            {
-                                resultingUserName = resultingUserName.RemoveAccents();
-                            }
-                            if (!AllowDuplicateUserNames)
-                            {
-                                resultingUserName = await vanillaClient.GetUniqueUserName(resultingUserName);
-                            }
-                        }
-                    }
 
                     // Sign-in user response
                     jsConnectResult.UniqueId = uniqueId;
-                    jsConnectResult.Name = resultingUserName;
+                    jsConnectResult.Name = await GetVanillaUsername(email, fullName);
                     jsConnectResult.Email = user.FindFirst(ClaimTypes.Email).Value;
                     jsConnectResult.PhotoUrl = user.FindFirst("AvatarUrl")?.Value;
                     jsConnectResult.Roles = user.FindFirst("Roles")?.Value;
@@ -144,6 +115,42 @@ namespace jsConnectNetCore.Controllers
 
                 return new JsonResult(jsConnectResult);
             }
+        }
+
+        private async Task<string> GetVanillaUsername(string email, string fullName)
+        {
+            var logger = LoggerFactory?.CreateLogger<VanillaApiClient>();
+
+            string resultingUserName = fullName;
+
+            using (var vanillaClient = new VanillaApiClient(BaseUri, logger))
+            {
+                // Try to get user
+                var vanillaUser = await vanillaClient.GetUser(email: email);
+                if (vanillaUser != null)
+                {
+                    // Existing user (don't change username)
+                    resultingUserName = vanillaUser.Profile.Name;
+                }
+                else
+                {
+                    // New user (generate a new username based on settings)
+                    if (!AllowWhitespaceInUsername)
+                    {
+                        resultingUserName = Regex.Replace(resultingUserName, @"\s+", "");
+                    }
+                    if (!AllowAccentsInUsername)
+                    {
+                        resultingUserName = resultingUserName.RemoveAccents();
+                    }
+                    if (!AllowDuplicateUserNames)
+                    {
+                        resultingUserName = await vanillaClient.GetUniqueUserName(resultingUserName);
+                    }
+                }
+            }
+
+            return resultingUserName;
         }
 
         /// <summary>
