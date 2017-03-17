@@ -82,9 +82,10 @@ namespace jsConnectNetCore
         }
 
         /// <summary>
-        /// Gets a Vanilla user, either by the unique ID or by a user name eventually.
+        /// Gets a Vanilla user, either by Smart ID (https://blog.vanillaforums.com/api-smart-id/)
         /// </summary>
         /// <param name="userId">Unique ID of the Vanilla user</param>
+        /// <param name="email">Email of the Vanilla user</param>
         /// <param name="userName">The user name to search by</param>
         /// <returns>The <see cref="VanillaUser"/> user</returns>
         public async Task<VanillaUser> GetUser(int? userId = null, string email = null, string userName = null)
