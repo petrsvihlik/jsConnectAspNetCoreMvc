@@ -14,7 +14,7 @@ namespace jsConnectAspNetCoreMvc.Tests
         {
         }
 
-        [Theory]
+        [Theory(Skip = "Connect to a live Vanilla instance and remove this parameter.")]
         [InlineData("ExistingUserName")]
         public async void GetsExistingUserName(string fullName)
         {
@@ -28,7 +28,7 @@ namespace jsConnectAspNetCoreMvc.Tests
             Assert.NotEqual(fullName, resultingUserName);
         }
 
-        [Theory]
+        [Theory(Skip = "Connect to a live Vanilla instance and remove this parameter.")]
         [InlineData("NameSurname")]
         public async void GetsNewUserName(string fullName)
         {
@@ -42,7 +42,7 @@ namespace jsConnectAspNetCoreMvc.Tests
             Assert.Equal("NameSurname", resultingUserName);
         }
 
-        [Theory]
+        [Theory(Skip = "Connect to a live Vanilla instance and remove this parameter.")]
         [InlineData("JohnDoe")]
         public async void CreatesNewSuffixedUserName(string fullName)
         {
@@ -56,7 +56,7 @@ namespace jsConnectAspNetCoreMvc.Tests
             Assert.Equal("JohnDoe1", resultingUserName);
         }
 
-        [Theory]
+        [Theory(Skip = "Connect to a live Vanilla instance and remove this parameter.")]
         [InlineData("existing_user@domain.tld")]
         public async void GetsExistingUser(string email)
         {
@@ -70,7 +70,7 @@ namespace jsConnectAspNetCoreMvc.Tests
             Assert.NotNull(user);
         }
 
-        [Theory]
+        [Theory(Skip = "Connect to a live Vanilla instance and remove this parameter.")]
         [InlineData("non_existing_user@domain.tld")]
         public async void NonExistentUserReturnsNull(string email)
         {
