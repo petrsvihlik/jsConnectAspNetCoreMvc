@@ -5,21 +5,21 @@ namespace jsConnectAspNetCoreMvc.Tests
 {
     public class JsConnectControllerTests
     {
-        // Currently, the data allowing us to do tests reside in the production instances of Vanilla and Intercom. We should create some in the staging instances, i.e. "https://kentico.vanillastaging.com/".
-        private const string API_URI = "https://forums.kenticocloud.com/"; 
+        /// <summary>
+        /// Point this to your forum instance.
+        /// </summary>
+        private const string VANILLA_API_URI = "https://forums.yourdomain.tld/"; 
 
         public JsConnectControllerTests()
         {
         }
 
-        [Theory]
-        [InlineData("PetrSvihlik")]
-        [InlineData("JanLenoch")]
-        [InlineData("MartinDanko")]
+        [Theory(Skip = "Connect to a live Vanilla instance and remove this parameter.")]
+        [InlineData("ExistingUserName")]
         public async void GetsExistingUserName(string fullName)
         {
             // Arrange
-            var client = new VanillaApiClient(API_URI, null);
+            using var client = new VanillaApiClient(VANILLA_API_URI, null);
 
             // Act
             string resultingUserName = await client.GetUniqueUserName(fullName);
@@ -28,55 +28,40 @@ namespace jsConnectAspNetCoreMvc.Tests
             Assert.NotEqual(fullName, resultingUserName);
         }
 
-        [Theory]
-        [InlineData("JmenoPrijmeni")]
+        [Theory(Skip = "Connect to a live Vanilla instance and remove this parameter.")]
+        [InlineData("NameSurname")]
         public async void GetsNewUserName(string fullName)
         {
             // Arrange
-            var client = new VanillaApiClient(API_URI, null);
+            using var client = new VanillaApiClient(VANILLA_API_URI, null);
 
             // Act
             string resultingUserName = await client.GetUniqueUserName(fullName);
 
             // Assert
-            Assert.Equal("JmenoPrijmeni", resultingUserName);
+            Assert.Equal("NameSurname", resultingUserName);
         }
 
-        [Theory]
-        [InlineData("JanLenoch")]
+        [Theory(Skip = "Connect to a live Vanilla instance and remove this parameter.")]
+        [InlineData("JohnDoe")]
         public async void CreatesNewSuffixedUserName(string fullName)
         {
             // Arrange
-            var client = new VanillaApiClient(API_URI, null);
+            using var client = new VanillaApiClient(VANILLA_API_URI, null);
 
             // Act
             string resultingUserName = await client.GetUniqueUserName(fullName);
 
             // Assert
-            Assert.Equal("JanLenoch1", resultingUserName);
+            Assert.Equal("JohnDoe1", resultingUserName);
         }
 
-        [Theory]
-        [InlineData("janl@kentico.com")]
-        [InlineData("branislavs@kentico.com")]
-        [InlineData("bryans@kentico.com")]
-        [InlineData("chrisj@kentico.com")]
-        [InlineData("janap@kentico.com")]
-        [InlineData("janc@kentico.com")]
-        [InlineData("jurajk@kentico.com")]
-        [InlineData("juraju@kentico.com")]
-        [InlineData("lukasm@kentico.com")]
-        [InlineData("lukasp2@kentico.com")]
-        [InlineData("martind2@kentico.com")]
-        [InlineData("martinh@kentico.com")]
-        [InlineData("martin.michalik@kentico.com")]
-        [InlineData("ondrejch@kentico.com")]
-        [InlineData("ondrejf2@kentico.com")]
-        [InlineData("ondrejs@kentico.com")]
+        [Theory(Skip = "Connect to a live Vanilla instance and remove this parameter.")]
+        [InlineData("existing_user@domain.tld")]
         public async void GetsExistingUser(string email)
         {
             // Arrange
-            var client = new VanillaApiClient(API_URI, null);
+            using var client = new VanillaApiClient(VANILLA_API_URI, null);
 
             // Act
             var user = await client.GetUser(email: email);
@@ -85,12 +70,12 @@ namespace jsConnectAspNetCoreMvc.Tests
             Assert.NotNull(user);
         }
 
-        [Theory]
-        [InlineData("0B0AF54F-5A55-4C78-8E86-C31CE3E43F3B")]
+        [Theory(Skip = "Connect to a live Vanilla instance and remove this parameter.")]
+        [InlineData("non_existing_user@domain.tld")]
         public async void NonExistentUserReturnsNull(string email)
         {
             // Arrange
-            var client = new VanillaApiClient(API_URI, null);
+            using var client = new VanillaApiClient(VANILLA_API_URI, null);
 
             // Act
             var user = await client.GetUser(email: email);
