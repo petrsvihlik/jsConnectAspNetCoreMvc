@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace jsConnectNetCore
+namespace jsConnect
 {
 	/// <summary>
 	/// Exception object containing parameters expected by Vanilla Forums.

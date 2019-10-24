@@ -2,15 +2,13 @@
 
   <PropertyGroup>
     <Description>Vanilla Forums' jsConnect for ASP.NET Core MVC</Description>
-    <VersionPrefix>1.0.6</VersionPrefix>
     <Authors>Petr Svihlik;Jan Lenoch</Authors>
     <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
-    <AssemblyName>jsConnectAspNetCoreMvc</AssemblyName>
+    <AssemblyName>jsConnect</AssemblyName>
     <PackageId>jsConnectAspNetCoreMvc</PackageId>
     <PackageLicenseUrl>https://github.com/petrsvihlik/jsConnectAspNetCoreMvc/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/petrsvihlik/jsConnectAspNetCoreMvc</RepositoryUrl>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>

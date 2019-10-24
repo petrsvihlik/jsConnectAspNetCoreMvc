@@ -5,14 +5,14 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
-using jsConnectNetCore.Models;
+using jsConnect;
+using jsConnect.Models;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace jsConnectNetCore.Controllers
+namespace jsConnect.Controllers
 {
     /// <summary>
     /// Authentication endpoint implemented in accordance with http://docs.vanillaforums.com/help/sso/jsconnect/seamless/.
@@ -130,8 +130,7 @@ namespace jsConnectNetCore.Controllers
             catch (Exception ex)
             {
                 // Error response
-                JsConnectException exception = ex as JsConnectException;
-                if (exception != null)
+                if (ex is JsConnectException exception)
                 {
                     jsConnectResult.Error = exception.Error;
                 }

@@ -2,7 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace jsConnectNetCore.Models
+namespace jsConnect.Models
 {
 	public class JsConnectResponseModel
 	{

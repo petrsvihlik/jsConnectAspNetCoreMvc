@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using System.Globalization;
 
-namespace jsConnectNetCore
+namespace jsConnect
 {
 	public static class Extensions
 	{
@@ -62,9 +62,9 @@ namespace jsConnectNetCore
 			{
 				throw new ArgumentNullException(nameof(s));
 			}
-			MatchEvaluator me = m => m.ToString().ToUpper();
+            static string me(Match m) => m.ToString().ToUpper();
 
-			string result = WebUtility.UrlEncode(s);
+            string result = WebUtility.UrlEncode(s);
 			result = Regex.Replace(result, "%[0-9a-f][0-9a-f]", me);
 			// Escape $+!*'() characters, leave -_. unescaped
 			result = result.Replace("'", "%27");
@@ -92,7 +92,7 @@ namespace jsConnectNetCore
 			}
 			else
 			{
-				return default(L);
+				return default;
 			}
 		}
 

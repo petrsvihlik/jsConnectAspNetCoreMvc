@@ -1,16 +1,16 @@
-﻿using jsConnectNetCore;
+﻿using jsConnect;
 using Xunit;
 
-namespace jsConnectAspNetCoreMvc.Tests
+namespace jsConnect.Tests
 {
-    public class JsConnectControllerTests
+    public class VanillaApiClientTests
     {
         /// <summary>
         /// Point this to your forum instance.
         /// </summary>
-        private const string VANILLA_API_URI = "https://forums.yourdomain.tld/"; 
+        private const string VANILLA_API_URI = "https://forums.yourdomain.tld/";
 
-        public JsConnectControllerTests()
+        public VanillaApiClientTests()
         {
         }
 

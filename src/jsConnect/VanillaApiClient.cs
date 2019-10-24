@@ -3,12 +3,10 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using jsConnectNetCore.Models;
+using jsConnect.Models;
 
-namespace jsConnectNetCore
+namespace jsConnect
 {
-
-
     public class VanillaApiClient : IDisposable
     {
         #region Fields
