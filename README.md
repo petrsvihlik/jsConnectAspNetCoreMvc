@@ -8,29 +8,24 @@ Vanilla Forums' jsConnect for ASP.NET Core MVC
 
 ## Getting started
 
-**1.** Add the [NuGet package](https://www.nuget.org/packages/jsConnectAspNetCoreMvc/) to the "dependencies" section of your project.json file:
-```json
-"dependencies": { 
-   "jsConnectAspNetCoreMvc": "1.0.*" 
-}
-```
-ASP.NET Core MVC will automatically discover the controller inside the assembly.
+**1.** Install the [NuGet package](https://www.nuget.org/packages/jsConnectAspNetCoreMvc/) and reference `jsConnect` from your web application project.
 
-**2.** Configure the DI Container. The library expects that you inject a hashing algorithm (keep it in sync with what you use in Vanilla Forums), `IConfiguration` and `ILogger`.
+**2.** Configure the DI Container. Inject `IConfiguration` and `ILogger`.
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-   services.AddMvc().AddJsonOptions(options =>
-   {
-	   // Setup json serializer
-	   options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-	   // Duplicate the settings in JsonConvert
-	   JsonConvert.DefaultSettings = () => options.SerializerSettings;
-   });
+	services
+	.AddMvc() // Or AddControllers, or similar...
+	.AddApplicationPart(typeof(VanillaApiClient).GetTypeInfo().Assembly) // Add the controllers from this
+	.AddJsonOptions(o =>
+	{
+		o.JsonSerializerOptions.PropertyNamingPolicy = null;
+		o.JsonSerializerOptions.IgnoreNullValues = true;
+	});
 
    services.AddSingleton(Configuration);
-   services.AddTransient<HashAlgorithm>(h => SHA512.Create());
+   services.AddTransient<HashAlgorithm>(h => SHA512.Create()); // Reflect the hashing algorithm set in Vanilla Forums
 }
 ```
 
@@ -58,3 +53,4 @@ System.Security.Claims.ClaimTypes.Email // required
 **6.** You are done!
 
 **7.** Additionally, you can add the `Vanilla:TimestampValidFor` setting (in seconds). By default, it's 30 minutes.
+See all configuration options in the [JsConnectController](https://github.com/petrsvihlik/jsConnectAspNetCoreMvc/blob/master/src/jsConnect/Controllers/JsConnectController.cs#L23).

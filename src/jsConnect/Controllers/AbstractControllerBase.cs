@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace jsConnectNetCore.Controllers
+namespace jsConnect.Controllers
 {
     /// <summary>
     /// Base controller containing default shared functionality.

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0EB0E003-5911-4A1F-A4FE-27A046C69D1A}"
 EndProject
@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jsConnectAspNetCoreMvc", "src\jsConnectAspNetCoreMvc\jsConnectAspNetCoreMvc.csproj", "{912C9673-A2BE-4841-80DE-4927B00D4AAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jsConnect", "src\jsConnect\jsConnect.csproj", "{912C9673-A2BE-4841-80DE-4927B00D4AAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jsConnectAspNetCoreMvc.Tests", "src\jsConnectAspNetCoreMvc.Tests\jsConnectAspNetCoreMvc.Tests.csproj", "{CB29B34C-08CF-46F7-8BF1-72A53B8A8CD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jsConnect.Tests", "src\jsConnect.Tests\jsConnect.Tests.csproj", "{CB29B34C-08CF-46F7-8BF1-72A53B8A8CD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +36,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{912C9673-A2BE-4841-80DE-4927B00D4AAB} = {0EB0E003-5911-4A1F-A4FE-27A046C69D1A}
 		{CB29B34C-08CF-46F7-8BF1-72A53B8A8CD9} = {0EB0E003-5911-4A1F-A4FE-27A046C69D1A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {152FAA66-3652-489F-A5EE-C867B46330A8}
 	EndGlobalSection
 EndGlobal
