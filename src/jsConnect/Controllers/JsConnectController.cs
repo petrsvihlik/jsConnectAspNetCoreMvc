@@ -72,17 +72,6 @@ namespace jsConnect.Controllers
         /// <summary>
         /// Returns details of a currently signed-in user, if any.
         /// </summary>
-        /// <remarks>A backward-compatibility method. Not sure if MVC is capable of redirecting to async method automatically. I'll check that eventually.</remarks>
-        [HttpGet("[action]")]
-        [Produces("application/json")]
-        public ActionResult Authenticate([FromQuery] string client_id, [FromQuery] string callback, [FromQuery] int? timestamp = null, [FromQuery] string signature = null)
-        {
-            return Task.Run(() => AuthenticateAsync(client_id, callback, timestamp, signature)).Result;
-        }
-
-        /// <summary>
-        /// Returns details of a currently signed-in user, if any.
-        /// </summary>
         [HttpGet("[action]")]
         [Produces("application/json")]
         public async Task<ActionResult> AuthenticateAsync([FromQuery] string client_id, [FromQuery] string callback, [FromQuery] int? timestamp = null, [FromQuery] string signature = null)

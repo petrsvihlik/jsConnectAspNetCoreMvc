@@ -26,7 +26,11 @@ namespace jsConnect
 			{
 				throw new ArgumentNullException(nameof(o));
 			}
-			return $"{callback}({JsonConvert.SerializeObject(o)})";
+			var settings = new JsonSerializerSettings
+			{
+				NullValueHandling = NullValueHandling.Ignore
+			};
+			return $"{callback}({JsonConvert.SerializeObject(o, Formatting.None, settings)})";
 		}
 
 		/// <summary>
