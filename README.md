@@ -17,12 +17,7 @@ public void ConfigureServices(IServiceCollection services)
 {
 	services
 	.AddMvc() // Or AddControllers, or similar...
-	.AddApplicationPart(typeof(VanillaApiClient).GetTypeInfo().Assembly) // Add the controllers from this
-	.AddJsonOptions(o =>
-	{
-		o.JsonSerializerOptions.PropertyNamingPolicy = null;
-		o.JsonSerializerOptions.IgnoreNullValues = true;
-	});
+	.AddApplicationPart(typeof(VanillaApiClient).GetTypeInfo().Assembly); // Add the controllers from this
 
    services.AddSingleton(Configuration);
    services.AddTransient<HashAlgorithm>(h => SHA512.Create()); // Reflect the hashing algorithm set in Vanilla Forums
@@ -35,7 +30,8 @@ public void ConfigureServices(IServiceCollection services)
    "ClientId": "your_client_id",
    "ClientSecret": "your_secret",
    "TimestampValidFor": "int_seconds",
-   "AllowWhitespaceInUsername": "bool" 
+   "AllowWhitespaceInUsername": "bool",
+   "BaseUri": "http://your-vanilla-forum.com/"
 }
 ```
 **4.** Make sure the `HttpContext.User` has the following claims set according to the [documentation](http://docs.vanillaforums.com/help/sso/jsconnect/seamless/):
