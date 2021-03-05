@@ -1,7 +1,7 @@
 # jsConnectAspNetCoreMvc
-[![Build status](https://ci.appveyor.com/api/projects/status/2pd8rmd5kaico1au?svg=true)](https://ci.appveyor.com/project/petrsvihlik/jsconnectaspnetcoremvc)
-[![Build status](https://img.shields.io/nuget/v/jsConnectAspNetCoreMvc.svg)](https://www.nuget.org/packages/jsConnectAspNetCoreMvc/)
-
+[![Build & Test](https://github.com/petrsvihlik/jsConnectAspNetCoreMvc/actions/workflows/integrate.yml/badge.svg)](https://github.com/petrsvihlik/jsConnectAspNetCoreMvc/actions/workflows/integrate.yml)
+[![NuGet link](https://img.shields.io/nuget/v/jsConnectAspNetCoreMvc.svg)](https://www.nuget.org/packages/jsConnectAspNetCoreMvc/)
+[![Downloads](https://img.shields.io/nuget/dt/jsConnectAspNetCoreMvc.svg)](https://www.nuget.org/packages/jsConnectAspNetCoreMvc/)
 
 
 Vanilla Forums' jsConnect for ASP.NET Core MVC
