@@ -48,7 +48,7 @@ namespace jsConnect.Models
 		#region "User Data"
 
 		[JsonIgnore]
-		private readonly Dictionary<string, string> UserData = new Dictionary<string, string>();
+		private readonly Dictionary<string, string> UserData = new();
 
 		[JsonProperty("uniqueid")]
 		public string UniqueId

@@ -14,6 +14,7 @@ namespace jsConnect
         protected readonly HttpClient _httpClient = null;
         protected readonly string _apiBaseUri;
         protected readonly ILogger<VanillaApiClient> _logger;
+        private bool disposedValue;
 
         #endregion
 
@@ -44,14 +45,6 @@ namespace jsConnect
         #endregion
 
         #region Public methods
-
-        /// <summary>
-        /// Releases unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            _httpClient?.Dispose();
-        }
 
         /// <summary>
         /// Gets an unused username. Should the proposed name be in conflict with another user, a numeric suffix is added.
@@ -142,7 +135,7 @@ namespace jsConnect
 
         private HttpRequestMessage CreateRequest(string uriSuffix)
         {
-            HttpRequestMessage request = new HttpRequestMessage
+            HttpRequestMessage request = new()
             {
                 RequestUri = new Uri(_apiBaseUri + uriSuffix),
                 Method = HttpMethod.Get
@@ -151,6 +144,34 @@ namespace jsConnect
             request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
             return request;
+        }
+
+        #endregion
+
+        #region Finalization
+
+        /// <inheritdoc/>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _httpClient?.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        /// <summary>
+        /// Release resources.
+        /// </summary>
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion

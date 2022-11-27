@@ -39,7 +39,7 @@ namespace jsConnect
 		/// <param name="dt"><see cref="DateTime"/> object to convert to a timestamp</param>
 		public static int Timestamp(this DateTime dt)
 		{
-			DateTime epoch = new DateTime(1970, 1, 1);
+			DateTime epoch = new(1970, 1, 1);
 			TimeSpan span = dt - epoch;
 			return (int)span.TotalSeconds;
 		}
@@ -90,9 +90,9 @@ namespace jsConnect
 			{
 				throw new ArgumentNullException(nameof(dic));
 			}
-			if (dic.ContainsKey(key))
+			if (dic.TryGetValue(key, out L value))
 			{
-				return dic[key];
+				return value;
 			}
 			else
 			{

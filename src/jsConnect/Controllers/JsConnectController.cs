@@ -77,7 +77,7 @@ namespace jsConnect.Controllers
         [ResponseCache(NoStore = true, Duration = 0)]
         public async Task<ActionResult> AuthenticateAsync([FromQuery] string client_id, [FromQuery] string callback, [FromQuery] int? timestamp = null, [FromQuery] string signature = null)
         {
-            JsConnectResponseModel jsConnectResult = new JsConnectResponseModel();
+            JsConnectResponseModel jsConnectResult = new();
 
             try
             {
