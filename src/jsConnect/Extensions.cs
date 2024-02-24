@@ -22,11 +22,8 @@ namespace jsConnect
 			{
 				throw new ArgumentNullException(nameof(callback), "Callback parameter must be initialized.");
 			}
-			if (o == null)
-			{
-				throw new ArgumentNullException(nameof(o));
-			}
-			var settings = new JsonSerializerSettings
+            ArgumentNullException.ThrowIfNull(o);
+            var settings = new JsonSerializerSettings
 			{
 				NullValueHandling = NullValueHandling.Ignore
 			};
@@ -50,11 +47,8 @@ namespace jsConnect
 		/// <param name="buff">Array to convert.</param>
 		public static string ToHexString(this byte[] buff)
 		{
-			if (buff == null)
-			{
-				throw new ArgumentNullException(nameof(buff));
-			}
-			return buff.Aggregate("", (current, t) => current + t.ToString("x2"));
+            ArgumentNullException.ThrowIfNull(buff);
+            return buff.Aggregate("", (current, t) => current + t.ToString("x2"));
 		}
 
 		/// <summary>
@@ -62,10 +56,7 @@ namespace jsConnect
 		/// </summary>
 		public static string UrlEncode(this string s)
 		{
-			if (s == null)
-			{
-				throw new ArgumentNullException(nameof(s));
-			}
+            ArgumentNullException.ThrowIfNull(s);
             static string me(Match m) => m.ToString().ToUpper();
 
             string result = WebUtility.UrlEncode(s);
@@ -86,11 +77,8 @@ namespace jsConnect
 		/// <returns>Returns value if the given key exists. Otherwise, returns a default value of <see cref="L"/>.</returns>
 		public static L GetValue<T, L>(this Dictionary<T, L> dic, T key)
 		{
-			if (dic == null)
-			{
-				throw new ArgumentNullException(nameof(dic));
-			}
-			if (dic.TryGetValue(key, out L value))
+            ArgumentNullException.ThrowIfNull(dic);
+            if (dic.TryGetValue(key, out L value))
 			{
 				return value;
 			}

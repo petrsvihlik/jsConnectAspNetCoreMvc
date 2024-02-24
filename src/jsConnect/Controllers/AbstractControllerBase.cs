@@ -7,17 +7,10 @@ namespace jsConnect.Controllers
     /// <summary>
     /// Base controller containing default shared functionality.
     /// </summary>
-    public abstract class AbstractControllerBase<T> : Controller
+    public abstract class AbstractControllerBase<T>(IConfiguration configuration, ILogger<T> logger, ILoggerFactory loggerFactory) : Controller
     {
-        protected IConfiguration Configuration { get; set; }
-        protected ILogger<T> Logger { get; set; }
-        protected ILoggerFactory LoggerFactory { get; set; }
-
-        protected AbstractControllerBase(IConfiguration configuration, ILogger<T> logger, ILoggerFactory loggerFactory)
-        {
-            Configuration = configuration;
-            Logger = logger;
-            LoggerFactory = loggerFactory;
-        }
+        protected IConfiguration Configuration { get; set; } = configuration;
+        protected ILogger<T> Logger { get; set; } = logger;
+        protected ILoggerFactory LoggerFactory { get; set; } = loggerFactory;
     }
 }

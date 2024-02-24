@@ -2,10 +2,13 @@
 
 namespace jsConnect
 {
-	/// <summary>
-	/// Exception object containing parameters expected by Vanilla Forums.
-	/// </summary>
-	public class JsConnectException : Exception
+    /// <summary>
+    /// Exception object containing parameters expected by Vanilla Forums.
+    /// </summary>
+    /// <remarks>
+    /// Default constructor.
+    /// </remarks>
+    public class JsConnectException(string error, string message) : Exception(message)
 	{
 		#region "Preconfigured error codes"
 
@@ -19,19 +22,11 @@ namespace jsConnect
 		/// </summary>
 		public const string ERROR_INVALID_CLIENT = "invalid_client";
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		/// Short error code.
-		/// </summary>
-		public string Error { get; set; }
-
-		/// <summary>
-		/// Default constructor.
-		/// </summary>
-		public JsConnectException(string error, string message) : base(message)
-		{
-			Error = error;
-		}
-	}
+        /// <summary>
+        /// Short error code.
+        /// </summary>
+        public string Error { get; set; } = error;
+    }
 }

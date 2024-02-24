@@ -18,7 +18,7 @@ namespace jsConnect.Controllers
     /// Authentication endpoint implemented in accordance with http://docs.vanillaforums.com/help/sso/jsconnect/seamless/.
     /// </summary>
     [Route("[controller]")]
-    public class JsConnectController : AbstractControllerBase<JsConnectController>
+    public class JsConnectController(IConfiguration configuration, ILogger<JsConnectController> logger, ILoggerFactory loggerFactory, HashAlgorithm hashAlgorithm) : AbstractControllerBase<JsConnectController>(configuration, logger, loggerFactory)
     {
         #region "Configuration"
 
@@ -61,13 +61,7 @@ namespace jsConnect.Controllers
 
         #endregion
 
-        private HashAlgorithm HashAlgorithm { get; set; }
-
-
-        public JsConnectController(IConfiguration configuration, ILogger<JsConnectController> logger, ILoggerFactory loggerFactory, HashAlgorithm hashAlgorithm) : base(configuration, logger, loggerFactory)
-        {
-            HashAlgorithm = hashAlgorithm;
-        }
+        private HashAlgorithm HashAlgorithm { get; set; } = hashAlgorithm;
 
         /// <summary>
         /// Returns details of a currently signed-in user, if any.

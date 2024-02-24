@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Vanilla Forums' jsConnect for ASP.NET Core MVC</Description>
     <Authors>Petr Svihlik;Jan Lenoch</Authors>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>jsConnect</AssemblyName>
     <PackageId>jsConnectAspNetCoreMvc</PackageId>
     <PackageLicenseUrl>https://github.com/petrsvihlik/jsConnectAspNetCoreMvc/blob/master/LICENSE</PackageLicenseUrl>
