@@ -8,22 +8,30 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore /p:ContinuousIntegrationBuild=true
-    - name: Test
-      run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-    - name: Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore -c Release /p:ContinuousIntegrationBuild=true
+      - name: Test
+        run: >
+          dotnet test
+          --no-build
+          --verbosity normal
+          -c Release
+          src/jsConnect.Tests/jsConnect.Tests.csproj
+          -p:CollectCoverage=true
+          -p:CoverletOutputFormat=opencover
+          '-p:Exclude=[xunit.*]*'
+          '-p:Include=[jsConnect.*]*'
+      - name: Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./src/jsConnect.Tests/coverage.opencover.xml

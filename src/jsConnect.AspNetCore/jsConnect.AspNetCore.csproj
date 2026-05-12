@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>jsConnect.AspNetCore</RootNamespace>
+    <AssemblyName>jsConnect.AspNetCore</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+
+    <!-- Packaging: this is the project that ships the NuGet -->
+    <IsPackable>true</IsPackable>
+    <PackageId>jsConnectAspNetCoreMvc</PackageId>
+    <Description>Vanilla Forums' jsConnect (v3 protocol) for ASP.NET Core. Provides a framework-agnostic core (jsConnect.Core), a minimal-API endpoint extension (jsConnect.AspNetCore), and an opt-in Vanilla API helper (jsConnect.Vanilla).</Description>
+    <Authors>Petr Svihlik;Jan Lenoch</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/petrsvihlik/jsConnectAspNetCoreMvc</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/petrsvihlik/jsConnectAspNetCoreMvc</RepositoryUrl>
+    <PackageTags>vanilla;jsconnect;sso;authentication;aspnetcore;forum</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+
+    <!-- Bundle referenced project DLLs into the package output -->
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\jsConnect.Core\jsConnect.Core.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\jsConnect.Vanilla\jsConnect.Vanilla.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.203" PrivateAssets="All" />
+    <!--
+      The Core project bundles JsonWebTokens but PrivateAssets="all" hides it from the package's
+      dependency list. Restate it here so NuGet pulls it in for consumers.
+    -->
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.18.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="jsConnect.Tests" />
+  </ItemGroup>
+
+  <!--
+    Pull DLLs and XML docs of referenced projects into the package so consumers
+    install one NuGet (jsConnectAspNetCoreMvc) but get jsConnect.Core + jsConnect.Vanilla + this.
+  -->
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+      <BuildOutputInPackage
+        Include="@(_ResolvedProjectReferencePaths-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
+        Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+    </ItemGroup>
+  </Target>
+
+</Project>

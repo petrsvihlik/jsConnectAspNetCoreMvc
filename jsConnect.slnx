@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/jsConnect.AspNetCore/jsConnect.AspNetCore.csproj" />
+    <Project Path="src/jsConnect.Core/jsConnect.Core.csproj" />
+    <Project Path="src/jsConnect.Tests/jsConnect.Tests.csproj" />
+    <Project Path="src/jsConnect.Vanilla/jsConnect.Vanilla.csproj" />
+  </Folder>
+</Solution>

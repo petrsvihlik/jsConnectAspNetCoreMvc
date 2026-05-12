@@ -1,30 +1,40 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-    <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
-      <PrivateAssets>all</PrivateAssets>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.7" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="3.2.0">
+    <PackageReference Include="coverlet.collector" Version="10.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.msbuild" Version="3.2.0">
-      <PrivateAssets>all</PrivateAssets>
+    <PackageReference Include="coverlet.msbuild" Version="10.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\jsConnect\jsConnect.csproj" />
+    <ProjectReference Include="..\jsConnect.Core\jsConnect.Core.csproj" />
+    <ProjectReference Include="..\jsConnect.AspNetCore\jsConnect.AspNetCore.csproj" />
+    <ProjectReference Include="..\jsConnect.Vanilla\jsConnect.Vanilla.csproj" />
   </ItemGroup>
 
 </Project>
