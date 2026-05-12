@@ -5,6 +5,9 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+      day: monday
+      time: "12:00"
+      timezone: "Europe/Prague"
     open-pull-requests-limit: 10
     groups:
       microsoft-extensions:
@@ -28,6 +31,9 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+      day: monday
+      time: "12:00"
+      timezone: "Europe/Prague"
     open-pull-requests-limit: 5
     groups:
       actions:
