@@ -8,9 +8,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
       - name: Extract version from tag
@@ -37,7 +37,7 @@ jobs:
           '-p:Exclude=[xunit.*]*'
           '-p:Include=[jsConnect.*]*'
       - name: Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./src/jsConnect.Tests/coverage.opencover.xml
@@ -52,7 +52,7 @@ jobs:
           src/jsConnect.AspNetCore/jsConnect.AspNetCore.csproj
           /p:PackageVersion="${{ steps.get_version.outputs.version }}"
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: NuGet-packages
           path: ./artifacts
