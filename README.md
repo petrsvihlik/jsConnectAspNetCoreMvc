@@ -1,6 +1,7 @@
 # jsConnectAspNetCoreMvc
 
 [![Build & Test](https://github.com/petrsvihlik/jsConnectAspNetCoreMvc/actions/workflows/integrate.yml/badge.svg)](https://github.com/petrsvihlik/jsConnectAspNetCoreMvc/actions/workflows/integrate.yml)
+[![codecov](https://codecov.io/gh/petrsvihlik/jsConnectAspNetCoreMvc/branch/master/graph/badge.svg)](https://codecov.io/gh/petrsvihlik/jsConnectAspNetCoreMvc)
 [![NuGet link](https://img.shields.io/nuget/v/jsConnectAspNetCoreMvc.svg)](https://www.nuget.org/packages/jsConnectAspNetCoreMvc/)
 [![Downloads](https://img.shields.io/nuget/dt/jsConnectAspNetCoreMvc.svg)](https://www.nuget.org/packages/jsConnectAspNetCoreMvc/)
 
