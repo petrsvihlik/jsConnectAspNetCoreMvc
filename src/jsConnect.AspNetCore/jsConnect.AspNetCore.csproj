@@ -25,8 +25,9 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
 
-    <!-- Bundle referenced project DLLs into the package output -->
+    <!-- Bundle referenced project DLLs/XML/PDBs into the package output -->
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+    <TargetsForTfmSpecificDebugSymbolsInPackage>$(TargetsForTfmSpecificDebugSymbolsInPackage);CopyProjectReferencesSymbolsToPackage</TargetsForTfmSpecificDebugSymbolsInPackage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -65,6 +66,17 @@
       <BuildOutputInPackage
         Include="@(_ResolvedProjectReferencePaths-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
         Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Bundle referenced project PDBs into the snupkg so SourceLink works for all three assemblies. -->
+  <Target Name="CopyProjectReferencesSymbolsToPackage" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <TfmSpecificDebugSymbolsFile
+        Include="@(_ResolvedProjectReferencePaths-&gt;'%(RootDir)%(Directory)%(Filename).pdb')"
+        Condition="Exists('%(RootDir)%(Directory)%(Filename).pdb')"
+        TargetPath="/lib/$(TargetFramework)/%(Filename).pdb"
+        TargetFramework="$(TargetFramework)" />
     </ItemGroup>
   </Target>
 
