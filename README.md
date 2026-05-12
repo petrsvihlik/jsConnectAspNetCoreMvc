@@ -1,4 +1,4 @@
-# jsConnectAspNetCoreMvc
+# Vanilla Forums jsConnect for ASP.NET Core
 
 [![Build & Test](https://github.com/petrsvihlik/jsConnectAspNetCoreMvc/actions/workflows/integrate.yml/badge.svg)](https://github.com/petrsvihlik/jsConnectAspNetCoreMvc/actions/workflows/integrate.yml)
 [![codecov](https://codecov.io/gh/petrsvihlik/jsConnectAspNetCoreMvc/branch/master/graph/badge.svg)](https://codecov.io/gh/petrsvihlik/jsConnectAspNetCoreMvc)
