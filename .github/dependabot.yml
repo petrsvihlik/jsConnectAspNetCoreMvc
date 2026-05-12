@@ -1,0 +1,35 @@
+version: 2
+updates:
+  # NuGet — scans the repo root recursively for .csproj / .slnx files.
+  - package-ecosystem: nuget
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      microsoft-extensions:
+        patterns:
+          - "Microsoft.Extensions.*"
+      microsoft-aspnetcore:
+        patterns:
+          - "Microsoft.AspNetCore.*"
+      microsoft-identitymodel:
+        patterns:
+          - "Microsoft.IdentityModel.*"
+      xunit:
+        patterns:
+          - "xunit*"
+      coverlet:
+        patterns:
+          - "coverlet.*"
+
+  # GitHub Actions used in .github/workflows/*.yml.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      actions:
+        patterns:
+          - "*"
