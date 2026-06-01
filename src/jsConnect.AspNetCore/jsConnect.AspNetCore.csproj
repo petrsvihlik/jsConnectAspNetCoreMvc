@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.203" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.300" PrivateAssets="All" />
     <!--
       The Core project bundles JsonWebTokens but PrivateAssets="all" hides it from the package's
       dependency list. Restate it here so NuGet pulls it in for consumers.
