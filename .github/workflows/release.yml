@@ -11,9 +11,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
       - name: Extract version from tag
@@ -40,7 +40,7 @@ jobs:
           '-p:Exclude=[xunit.*]*'
           '-p:Include=[jsConnect.*]*'
       - name: Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./src/jsConnect.Tests/coverage.opencover.xml
