@@ -30,8 +30,12 @@ jobs:
           --coverage-settings src/jsConnect.Tests/CodeCoverage.config
           --coverage-output-format cobertura
           --coverage-output coverage.cobertura.xml
+      - name: Check coverage report
+        run: python3 .github/scripts/check-coverage.py ./coverage/coverage.cobertura.xml
       - name: Codecov
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/coverage.cobertura.xml
+          disable_search: true
+          fail_ci_if_error: true
