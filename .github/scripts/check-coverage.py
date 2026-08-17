@@ -32,45 +32,84 @@ def class_lines(cls):
     return lines.findall("line") if lines is not None else []
 
 
-def tally(lines):
-    return sum(1 for line in lines if int(line.get("hits", "0")) > 0), len(lines)
+def conditions(line):
+    """Covered/total branches for a line, from condition-coverage="50% (1/2)"."""
+    text = line.get("condition-coverage", "")
+    if "(" not in text or "/" not in text:
+        return 0, 0
+    covered, _, total = text[text.index("(") + 1 : text.rindex(")")].partition("/")
+    try:
+        return int(covered), int(total)
+    except ValueError:
+        return 0, 0
 
 
-def rate(covered, total):
+def pct(covered, total):
     return f"{covered / total:.1%}" if total else "n/a"
 
 
-packages = []
+def bar(covered, total, width=24):
+    filled = round(width * covered / total) if total else 0
+    return "█" * filled + "░" * (width - filled)
+
+
+class Tally:
+    def __init__(self):
+        self.lines = self.hit = self.branches = self.branches_hit = 0
+
+    def add(self, line):
+        self.lines += 1
+        if int(line.get("hits", "0")) > 0:
+            self.hit += 1
+        covered, total = conditions(line)
+        self.branches += total
+        self.branches_hit += covered
+
+
+assemblies = {}
 for package in root.iter("package"):
-    lines = [line for cls in package.iter("class") for line in class_lines(cls)]
-    covered, total = tally(lines)
-    packages.append((package.get("name") or "(unnamed)", covered, total))
+    tally = assemblies.setdefault(package.get("name") or "(unnamed)", Tally())
+    for cls in package.iter("class"):
+        for line in class_lines(cls):
+            tally.add(line)
 
-total_covered = sum(covered for _, covered, _ in packages)
-total_lines = sum(total for _, _, total in packages)
+total_lines = sum(t.lines for t in assemblies.values())
+total_hit = sum(t.hit for t in assemblies.values())
+total_branches = sum(t.branches for t in assemblies.values())
+total_branches_hit = sum(t.branches_hit for t in assemblies.values())
 
-print(f"coverage: {rate(total_covered, total_lines)} ({total_covered}/{total_lines} lines)")
-for name, covered, total in packages:
-    print(f"  {name}: {rate(covered, total)} ({covered}/{total} lines)")
+print(f"coverage: {pct(total_hit, total_lines)} ({total_hit}/{total_lines} lines)")
+for name, tally in sorted(assemblies.items()):
+    print(f"  {name}: {pct(tally.hit, tally.lines)} ({tally.hit}/{tally.lines} lines)")
 
 summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
-if summary_path:
-    rows = [
-        "## Coverage",
+if summary_path and assemblies:
+    branch_note = (
+        f" · **{total_branches_hit} of {total_branches} branches** "
+        f"({pct(total_branches_hit, total_branches)})"
+        if total_branches
+        else ""
+    )
+    out = [
+        f"## Coverage — {pct(total_hit, total_lines)}",
         "",
-        f"**{rate(total_covered, total_lines)}** — {total_covered} of {total_lines} lines covered",
+        f"`{bar(total_hit, total_lines)}`",
         "",
-        "| Assembly | Coverage | Lines |",
-        "| --- | --- | --- |",
+        f"**{total_hit} of {total_lines} lines**{branch_note}",
+        "",
+        "| Assembly | Coverage | Lines | Branches |",
+        "| --- | ---: | ---: | ---: |",
     ]
-    rows += [
-        f"| {name} | {rate(covered, total)} | {covered}/{total} |"
-        for name, covered, total in sorted(packages)
-    ]
+    for name, tally in sorted(assemblies.items()):
+        branches = f"{tally.branches_hit}/{tally.branches}" if tally.branches else "—"
+        out.append(
+            f"| `{name}` | {pct(tally.hit, tally.lines)} "
+            f"| {tally.hit}/{tally.lines} | {branches} |"
+        )
     with open(summary_path, "a", encoding="utf-8") as summary:
-        summary.write("\n".join(rows) + "\n")
+        summary.write("\n".join(out) + "\n")
 
-if not packages:
+if not assemblies:
     sys.exit(f"{path} contains no assemblies — check the ModulePaths filter")
-if total_covered == 0:
+if total_hit == 0:
     sys.exit(f"{path} reports zero covered lines")
