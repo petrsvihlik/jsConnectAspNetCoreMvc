@@ -28,7 +28,7 @@
       Needs its compile assets: the package's targets generate
       SelfRegisteredExtensions.cs, which references the extension type directly.
     -->
-    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.9.0" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.10.0" />
   </ItemGroup>
 
   <ItemGroup>
