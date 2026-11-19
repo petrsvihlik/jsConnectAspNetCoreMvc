@@ -33,9 +33,7 @@ public static partial class UsernameSanitizer
         ArgumentNullException.ThrowIfNull(input);
 
         var decomposed = input.Normalize(NormalizationForm.FormD);
-        var chars = decomposed
-            .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
-            .ToArray();
+        char[] chars = [.. decomposed.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)];
         return new string(chars).Normalize(NormalizationForm.FormC);
     }
 

@@ -47,7 +47,7 @@ public class ClaimsJsConnectUserResolverTests
         Assert.Equal("Alice", user.Name);
         Assert.Equal("alice@example.com", user.Email);
         Assert.Equal("https://example.com/alice.jpg", user.PhotoUrl);
-        Assert.Equal(new[] { "admin", "member" }, user.Roles);
+        Assert.Equal(["admin", "member"], user.Roles);
     }
 
     [Fact]
@@ -98,6 +98,6 @@ public class ClaimsJsConnectUserResolverTests
         Assert.Equal("bob", user.Name);
         Assert.Equal("bob@example.com", user.Email);
         Assert.Equal("https://example.com/bob.jpg", user.PhotoUrl);
-        Assert.Equal(new[] { "user" }, user.Roles);
+        Assert.Equal(["user"], user.Roles);
     }
 }

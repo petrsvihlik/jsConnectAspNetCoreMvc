@@ -20,7 +20,7 @@ public class JsConnectV3Tests
         Name = "alice",
         Email = "alice@example.com",
         PhotoUrl = "https://example.com/alice.jpg",
-        Roles = new[] { "admin", "member" },
+        Roles = ["admin", "member"],
     };
 
     [Fact]
@@ -63,8 +63,8 @@ public class JsConnectV3Tests
         Assert.Equal("alice", u.GetProperty("name").GetString());
         Assert.Equal("alice@example.com", u.GetProperty("email").GetString());
         Assert.Equal("https://example.com/alice.jpg", u.GetProperty("photo").GetString());
-        var roles = u.GetProperty("roles").EnumerateArray().Select(e => e.GetString()).ToArray();
-        Assert.Equal(new[] { "admin", "member" }, roles);
+        string?[] roles = [.. u.GetProperty("roles").EnumerateArray().Select(e => e.GetString())];
+        Assert.Equal(["admin", "member"], roles);
     }
 
     [Fact]
@@ -245,11 +245,11 @@ public class JsConnectV3Tests
     {
         var jsc = new JsConnectV3(DefaultOptions());
         var reqJwt = TestJwtBuilder.CreateRequestJwt();
-        var query = new[]
-        {
-            new KeyValuePair<string, string?>("other", "x"),
-            new KeyValuePair<string, string?>("jwt", reqJwt),
-        };
+        KeyValuePair<string, string?>[] query =
+        [
+            new("other", "x"),
+            new("jwt", reqJwt),
+        ];
 
         var location = await jsc.GenerateResponseLocationAsync(query, SampleUser);
         Assert.Contains("#jwt=", location);
@@ -259,7 +259,7 @@ public class JsConnectV3Tests
     public async Task Query_overload_throws_when_jwt_is_missing()
     {
         var jsc = new JsConnectV3(DefaultOptions());
-        var query = new[] { new KeyValuePair<string, string?>("other", "x") };
+        KeyValuePair<string, string?>[] query = [new("other", "x")];
 
         await Assert.ThrowsAsync<FieldNotFoundException>(
             () => jsc.GenerateResponseLocationAsync(query, SampleUser));

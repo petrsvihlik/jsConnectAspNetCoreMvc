@@ -156,4 +156,4 @@ In Vanilla's dashboard you must also re-issue your jsConnect client as **v3** an
 
 ## Target framework
 
-`.NET 10` (LTS).
+`.NET 11` (C# 15).

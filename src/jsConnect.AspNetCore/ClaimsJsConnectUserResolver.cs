@@ -17,15 +17,10 @@ namespace jsConnect.AspNetCore;
 ///   <item><see cref="ClaimTypes.Role"/> (all instances) → <c>roles</c></item>
 /// </list>
 /// </remarks>
-public sealed class ClaimsJsConnectUserResolver : IJsConnectUserResolver
+public sealed class ClaimsJsConnectUserResolver(IOptions<ClaimsJsConnectUserResolverOptions> options) : IJsConnectUserResolver
 {
-    private readonly ClaimsJsConnectUserResolverOptions _options;
-
-    public ClaimsJsConnectUserResolver(IOptions<ClaimsJsConnectUserResolverOptions> options)
-    {
-        ArgumentNullException.ThrowIfNull(options);
-        _options = options.Value;
-    }
+    private readonly ClaimsJsConnectUserResolverOptions _options =
+        (options ?? throw new ArgumentNullException(nameof(options))).Value;
 
     public Task<JsConnectUser?> ResolveAsync(HttpContext context, CancellationToken cancellationToken)
     {
@@ -43,10 +38,9 @@ public sealed class ClaimsJsConnectUserResolver : IJsConnectUserResolver
             return Task.FromResult<JsConnectUser?>(null);
 
         var photo = principal.FindFirst(_options.PhotoUrlClaimType)?.Value;
-        var roles = principal.FindAll(_options.RoleClaimType)
+        string[] roles = [.. principal.FindAll(_options.RoleClaimType)
             .Select(c => c.Value)
-            .Where(v => !string.IsNullOrEmpty(v))
-            .ToArray();
+            .Where(v => !string.IsNullOrEmpty(v))];
 
         var user = new JsConnectUser
         {
@@ -54,7 +48,7 @@ public sealed class ClaimsJsConnectUserResolver : IJsConnectUserResolver
             Name = name,
             Email = email,
             PhotoUrl = string.IsNullOrEmpty(photo) ? null : photo,
-            Roles = roles.Length == 0 ? null : roles,
+            Roles = roles is [] ? null : roles,
         };
 
         return Task.FromResult<JsConnectUser?>(user);

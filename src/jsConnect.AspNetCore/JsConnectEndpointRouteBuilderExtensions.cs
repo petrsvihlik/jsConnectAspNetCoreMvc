@@ -12,24 +12,26 @@ namespace jsConnect.AspNetCore;
 /// </summary>
 public static class JsConnectEndpointRouteBuilderExtensions
 {
-    /// <summary>
-    /// Maps the jsConnect authentication endpoint at the given route pattern.
-    /// </summary>
-    /// <param name="endpoints">The endpoint route builder.</param>
-    /// <param name="pattern">URL pattern, e.g. <c>"/jsconnect"</c>. This is the URL you'll configure in Vanilla's dashboard.</param>
-    /// <returns>An <see cref="IEndpointConventionBuilder"/> so callers can chain <c>.RequireAuthorization()</c>, etc.</returns>
-    /// <example>
-    /// <code>
-    /// var app = builder.Build();
-    /// app.MapJsConnect("/jsconnect");
-    /// </code>
-    /// </example>
-    public static IEndpointConventionBuilder MapJsConnect(this IEndpointRouteBuilder endpoints, string pattern)
+    extension(IEndpointRouteBuilder endpoints)
     {
-        ArgumentNullException.ThrowIfNull(endpoints);
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
+        /// <summary>
+        /// Maps the jsConnect authentication endpoint at the given route pattern.
+        /// </summary>
+        /// <param name="pattern">URL pattern, e.g. <c>"/jsconnect"</c>. This is the URL you'll configure in Vanilla's dashboard.</param>
+        /// <returns>An <see cref="IEndpointConventionBuilder"/> so callers can chain <c>.RequireAuthorization()</c>, etc.</returns>
+        /// <example>
+        /// <code>
+        /// var app = builder.Build();
+        /// app.MapJsConnect("/jsconnect");
+        /// </code>
+        /// </example>
+        public IEndpointConventionBuilder MapJsConnect(string pattern)
+        {
+            ArgumentNullException.ThrowIfNull(endpoints);
+            ArgumentException.ThrowIfNullOrEmpty(pattern);
 
-        return endpoints.MapGet(pattern, (Delegate)HandleAsync);
+            return endpoints.MapGet(pattern, (Delegate)HandleAsync);
+        }
     }
 
     private static async Task<IResult> HandleAsync(HttpContext context)

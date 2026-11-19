@@ -61,7 +61,7 @@ internal static class TestJwtBuilder
             ValidateIssuerSigningKey = true,
             ValidateLifetime = false,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
-            ValidAlgorithms = new[] { "HS256", "HS384", "HS512" },
+            ValidAlgorithms = ["HS256", "HS384", "HS512"],
         };
         var result = await _handler.ValidateTokenAsync(jwt, validationParameters);
         if (!result.IsValid)

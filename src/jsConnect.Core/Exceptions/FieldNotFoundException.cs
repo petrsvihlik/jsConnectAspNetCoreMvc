@@ -1,15 +1,9 @@
 namespace jsConnect.Exceptions;
 
 /// <summary>Raised when a required field is missing from the request payload (e.g. the <c>jwt</c> query parameter).</summary>
-public class FieldNotFoundException : JsConnectException
+public class FieldNotFoundException(string field, string collection)
+    : JsConnectException($"Field not found: {collection}[{field}].")
 {
-    public string FieldName { get; }
-    public string CollectionName { get; }
-
-    public FieldNotFoundException(string field, string collection)
-        : base($"Field not found: {collection}[{field}].")
-    {
-        FieldName = field;
-        CollectionName = collection;
-    }
+    public string FieldName { get; } = field;
+    public string CollectionName { get; } = collection;
 }
