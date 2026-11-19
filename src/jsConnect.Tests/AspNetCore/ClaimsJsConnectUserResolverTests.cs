@@ -21,6 +21,10 @@ public class ClaimsJsConnectUserResolverTests
         new(new ClaimsIdentity(claims, authenticationType: "TestScheme"));
 
     [Fact]
+    public void Constructor_rejects_null_options() =>
+        Assert.Throws<ArgumentNullException>(() => new ClaimsJsConnectUserResolver(null!));
+
+    [Fact]
     public async Task Returns_null_for_an_unauthenticated_principal()
     {
         var ctx = WithUser(new ClaimsPrincipal(new ClaimsIdentity()));
@@ -47,7 +51,7 @@ public class ClaimsJsConnectUserResolverTests
         Assert.Equal("Alice", user.Name);
         Assert.Equal("alice@example.com", user.Email);
         Assert.Equal("https://example.com/alice.jpg", user.PhotoUrl);
-        Assert.Equal(new[] { "admin", "member" }, user.Roles);
+        Assert.Equal(["admin", "member"], user.Roles);
     }
 
     [Fact]
@@ -98,6 +102,6 @@ public class ClaimsJsConnectUserResolverTests
         Assert.Equal("bob", user.Name);
         Assert.Equal("bob@example.com", user.Email);
         Assert.Equal("https://example.com/bob.jpg", user.PhotoUrl);
-        Assert.Equal(new[] { "user" }, user.Roles);
+        Assert.Equal(["user"], user.Roles);
     }
 }

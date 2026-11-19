@@ -54,7 +54,7 @@ public sealed class JsConnectV3
             ValidateLifetime = true,
             RequireExpirationTime = false,
             IssuerSigningKey = signingKey,
-            ValidAlgorithms = new[] { JsConnectAlgorithms.HS256, JsConnectAlgorithms.HS384, JsConnectAlgorithms.HS512 },
+            ValidAlgorithms = [JsConnectAlgorithms.HS256, JsConnectAlgorithms.HS384, JsConnectAlgorithms.HS512],
             ClockSkew = TimeSpan.Zero,
             LifetimeValidator = LifetimeValidator,
         };
@@ -171,8 +171,10 @@ public sealed class JsConnectV3
 
     private static Dictionary<string, object?> BuildUserClaim(JsConnectUser? user)
     {
-        var dict = new Dictionary<string, object?>();
-        if (user is null) return dict;
+        if (user is null) return [];
+
+        // id, name, email, photo, roles + any custom fields.
+        Dictionary<string, object?> dict = [with(capacity: 5 + (user.CustomFields?.Count ?? 0))];
 
         dict["id"] = user.UniqueId;
         dict["name"] = user.Name;
@@ -180,7 +182,7 @@ public sealed class JsConnectV3
         if (!string.IsNullOrEmpty(user.PhotoUrl))
             dict["photo"] = user.PhotoUrl;
         if (user.Roles is { Count: > 0 })
-            dict["roles"] = user.Roles.ToArray();
+            dict["roles"] = (string[])[.. user.Roles];
         if (user.CustomFields is { Count: > 0 })
         {
             foreach (var (key, value) in user.CustomFields)

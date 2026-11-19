@@ -13,7 +13,7 @@ public sealed class JsConnectOptions
     public string ClientId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Shared HMAC signing secret. Must be at least 16 bytes when UTF-8 encoded.
+    /// Shared HMAC signing secret. Minimum UTF-8 length: 32 bytes for HS256, 48 for HS384, 64 for HS512.
     /// </summary>
     public string Secret { get; set; } = string.Empty;
 
