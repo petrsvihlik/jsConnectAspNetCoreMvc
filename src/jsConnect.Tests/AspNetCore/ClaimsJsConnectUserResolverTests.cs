@@ -21,6 +21,10 @@ public class ClaimsJsConnectUserResolverTests
         new(new ClaimsIdentity(claims, authenticationType: "TestScheme"));
 
     [Fact]
+    public void Constructor_rejects_null_options() =>
+        Assert.Throws<ArgumentNullException>(() => new ClaimsJsConnectUserResolver(null!));
+
+    [Fact]
     public async Task Returns_null_for_an_unauthenticated_principal()
     {
         var ctx = WithUser(new ClaimsPrincipal(new ClaimsIdentity()));
