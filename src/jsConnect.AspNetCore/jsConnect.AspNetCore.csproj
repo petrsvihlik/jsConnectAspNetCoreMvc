@@ -28,7 +28,6 @@
 
     <!-- Bundle referenced project DLLs/XML/PDBs into the package output -->
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
-    <TargetsForTfmSpecificDebugSymbolsInPackage>$(TargetsForTfmSpecificDebugSymbolsInPackage);CopyProjectReferencesSymbolsToPackage</TargetsForTfmSpecificDebugSymbolsInPackage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -59,26 +58,14 @@
   </ItemGroup>
 
   <!--
-    Pull DLLs and XML docs of referenced projects into the package so consumers
-    install one NuGet (jsConnectAspNetCoreMvc) but get jsConnect.Core + jsConnect.Vanilla + this.
+    Pull the DLLs of referenced projects into the package so consumers install one NuGet
+    (jsConnectAspNetCoreMvc) but get jsConnect.Core + jsConnect.Vanilla + this.
+    Pack picks up the matching XML docs (nupkg) and PDBs (snupkg) next to each DLL on its own;
+    adding them explicitly produces duplicates, which nuget.org rejects for symbol packages.
   -->
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
-      <BuildOutputInPackage
-        Include="@(_ResolvedProjectReferencePaths-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
-        Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
-    </ItemGroup>
-  </Target>
-
-  <!-- Bundle referenced project PDBs into the snupkg so SourceLink works for all three assemblies. -->
-  <Target Name="CopyProjectReferencesSymbolsToPackage" DependsOnTargets="ResolveReferences">
-    <ItemGroup>
-      <TfmSpecificDebugSymbolsFile
-        Include="@(_ResolvedProjectReferencePaths-&gt;'%(RootDir)%(Directory)%(Filename).pdb')"
-        Condition="Exists('%(RootDir)%(Directory)%(Filename).pdb')"
-        TargetPath="/lib/$(TargetFramework)/%(Filename).pdb"
-        TargetFramework="$(TargetFramework)" />
     </ItemGroup>
   </Target>
 
