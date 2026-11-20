@@ -3,22 +3,37 @@ name: Publish to NuGet
 on:
   release:
     types: [published]
+  # Manual (re-)publish of an existing release, e.g. after a failed push.
+  # Runs this workflow file from the selected branch but builds the code at the given tag.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to build and publish (e.g. 8.0.0)
+        required: true
+        type: string
 
 permissions:
   contents: write   # gh release upload
+  id-token: write   # OIDC token for NuGet trusted publishing
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag || github.ref }}
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
       - name: Extract version from tag
         id: get_version
-        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
@@ -62,9 +77,19 @@ jobs:
         with:
           name: NuGet-packages
           path: ./artifacts
+      # Trusted publishing: exchange the GitHub OIDC token for a short-lived (1h) nuget.org API key.
+      # Requires a trusted publishing policy on nuget.org for this repo + release.yml. No stored secret.
+      - name: NuGet login (OIDC)
+        id: nuget_login
+        uses: NuGet/login@v1
+        with:
+          user: rocky.intel   # nuget.org profile name of the package owner
       - name: Publish to NuGet.org
-        run: dotnet nuget push './artifacts/*.nupkg' -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+        run: dotnet nuget push './artifacts/*.nupkg' -s https://api.nuget.org/v3/index.json -k "$NUGET_API_KEY" --skip-duplicate
+        env:
+          NUGET_API_KEY: ${{ steps.nuget_login.outputs.NUGET_API_KEY }}
       - name: Attach packages to GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "$GITHUB_REF_NAME" ./artifacts/*.nupkg ./artifacts/*.snupkg --clobber
+          TAG: ${{ steps.get_version.outputs.tag }}
+        run: gh release upload "$TAG" ./artifacts/*.nupkg ./artifacts/*.snupkg --clobber
